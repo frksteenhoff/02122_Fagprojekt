@@ -48,11 +48,12 @@ public class Index1{
 	    	for(int i = 0; i < list.size(); i++){
 	    		if(list.get(i).str.equals(string)){
 	    			if(!list.get(i).title.contains(currentTitle)){
-	    			list.get(i).title += currentTitle;
-	    			return true;
-	    		}else{
-	    			return false;
-	    			 }
+                        list.get(i).title += "\n";
+                        list.get(i).title += currentTitle;
+                        return true;
+                    }else{
+                        return false;
+                    }
 	    		}
 	    	}
 			return false;
@@ -64,7 +65,7 @@ public class Index1{
             long Start = System.nanoTime();
 	        try {
 	            Scanner input = new Scanner(new File(filename), "UTF-8");
-	            word = input.next();
+	            word = input.next().toLowerCase();
 	            if(x == 0 && !word.equals(null)){
 	            	currentTitle = word;
 	            	x = 1;
@@ -105,7 +106,7 @@ public class Index1{
 	            	System.out.println("------------------------------------");
 	            	System.out.println("You are searching for:              " + searchstr);
 	            	//System.out.println("Subsequent word is:                 " + current.next.str);
-	            	System.out.println("Search string \"" + searchstr + "\" found in: " + (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+	            	System.out.println("Search string \"" + searchstr + "\" found in: \n" + (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 
 	            	/*while(!current.next.str.equals("---END.OF.DOCUMENT-----")){
 	            		current = current.next;
