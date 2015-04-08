@@ -1,0 +1,24 @@
+KØRETIDER:
+
+Naiv løsning
+-----------------------
+Filstørrelse	Tid
+100KB		< 1 sek
+1MB		 11 sek
+2MB		 46 sek
+5MB		326 sek
+<Evt. teoretiske udregninger>
+
+Optimeret løsning
+-----------------------
+Filstørrelse	Tid
+100KB
+1MB
+2MB
+5MB
+20MB
+50MB
+<Evt. flere faktiske køretider>
+
+Til rapport: 
+Beskriv ændringer som har forbedret køretiden
