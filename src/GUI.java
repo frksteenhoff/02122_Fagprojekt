@@ -1,4 +1,4 @@
-import Index1;
+//import Index1;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.JTextArea;
@@ -18,7 +18,7 @@ public class GUI extends JFrame implements MouseListener {
 	}
 	public static JTextArea editText = new JTextArea("Search .."); //Event listener for Enter
 	boolean clicked = false;
-	
+
 	public GUI(){
 		JFrame mainframe = new JFrame();
 		mainframe.setSize(400,100);
@@ -26,7 +26,7 @@ public class GUI extends JFrame implements MouseListener {
 		mainframe.setDefaultCloseOperation (JFrame. EXIT_ON_CLOSE );
 		mainframe.setTitle("WOZA");
 		mainframe.setBackground(new Color(0,0,0));
-		
+
 		Font font = new Font("Helvetica", Font.PLAIN, 32);
 		editText.setBackground(Color.WHITE);
 		editText.setBounds(0, 0, 400, 100);
@@ -41,31 +41,32 @@ public class GUI extends JFrame implements MouseListener {
 		if(!clicked){
 			editText.setText("");
 			clicked = true;
+			//TODO When enter is pressed, search for word through search bar (as in Index1)
+
 		}
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
