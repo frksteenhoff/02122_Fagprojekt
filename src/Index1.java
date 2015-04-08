@@ -1,9 +1,9 @@
-	import java.io.File;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Index1 extends GUI{
+public class Index1{
 		int x = 0;
 	
 	    WikiItem start;
@@ -121,10 +121,11 @@ public class Index1 extends GUI{
 	    public static void main(String[] args) {
 	        System.out.println("Preprocessing " + args[0]);
 	        Index1 i = new Index1(args[0]);
-	        Scanner console = new Scanner(System.in);
-	        for (;;) {
+	        GUI g = new GUI(i);
+	        //Scanner console = new Scanner(System.in);
+	        /*for (;;) {
 	            System.out.println("Input search string or type exit to stop");
-	            String searchstr = console.nextLine();
+	            String searchstr = GUI.editText.getText();
 	            if (searchstr.equals("exit")) {
 	                break;
 	            }
@@ -133,7 +134,7 @@ public class Index1 extends GUI{
 	            } else {
 	                System.out.println(searchstr + " does not exist");
 	            }
-	        }
-	        console.close();
+	        }*/
+	        //console.close();
 	    }
 }

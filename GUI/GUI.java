@@ -39,7 +39,7 @@ public class GUI extends JFrame implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if(!clicked){
-			editText.setText("");
+			editText.setText("horse");
 			clicked = true;
 		}
 		
