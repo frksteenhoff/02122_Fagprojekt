@@ -61,6 +61,7 @@ public class Index1{
 	    public Index1(String filename) {
 	        String word, currentTitle = null;
 	        WikiItem current, tmp;
+            long Start = System.nanoTime();
 	        try {
 	            Scanner input = new Scanner(new File(filename), "UTF-8");
 	            word = input.next();
@@ -92,6 +93,9 @@ public class Index1{
 	        } catch (FileNotFoundException e) {
 	            System.out.println("Error reading file " + filename);
 	        }
+            
+            long endTime = System.nanoTime();
+            System.out.println((endTime-Start)/1000000000);
 	    }
 	 
 	    public boolean search(String searchstr) {

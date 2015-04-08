@@ -1,4 +1,4 @@
-
+ 
    import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.JTextArea;
@@ -27,7 +27,7 @@ public class GUI extends JFrame implements MouseListener, KeyListener {
 	public GUI(Index1 filename){
 		i = filename;
 		JFrame mainframe = new JFrame();
-			mainframe.setSize(400,100);
+			mainframe.setSize(400,50);
 			mainframe.setLocationRelativeTo(null);
 			mainframe.setDefaultCloseOperation (JFrame. EXIT_ON_CLOSE );
 			mainframe.setTitle("WOZA");
