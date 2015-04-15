@@ -86,8 +86,11 @@ public class Index1{
 
 	public Index1(String filename) {
 
+        long Start = System.nanoTime();
 		ArrayList<String> test = this.sectionPreprocessing(filename);
 		System.out.println(test.size());
+        long endTime = System.nanoTime();
+        System.out.println((endTime-Start)/1000000000);
 
 
 		/*String word, currentTitle = null;
