@@ -24,7 +24,7 @@ public class Index1{
 
 	public class wikiMap{
 		ArrayList<ArrayList<WikiItem>> mapList = new ArrayList<ArrayList<WikiItem>>();
-
+        
 		wikiMap(){
 
 			for(int i = 0; i <25; i++){
@@ -32,11 +32,9 @@ public class Index1{
 				mapList.add(list);
 			}
 		}
-
-
-
+        
 		public void add(WikiItem w){
-			mapList.get(w.WikiNR % mapList.size()).add(w);
+            mapList.get(w.WikiNR % mapList.size()).add(w);
 		}
 
 		public ArrayList<WikiItem> get(int i){
@@ -88,71 +86,29 @@ public class Index1{
 	}
 
 	boolean ContainsAddString(ArrayList<WikiItem> list, String string, String currentTitle){
-		for(int i = 0; i < list.size(); i++){
-			if(list.get(i).str.equals(string)){
-				if(!list.get(i).title.contains(currentTitle)){
-					list.get(i).title += "\n";
-					list.get(i).title += currentTitle;
+        for(WikiItem i : list){
+			if(i.str.equals(string)){
+				if(!i.title.contains(currentTitle)){
+					i.title += "\n" + currentTitle;
 					return true;
 				}else{
 					return false;
 				}
 			}
 		}
+        
 		return false;
 	}
 
 	public Index1(String filename) {
 		long Start = System.nanoTime();
-
-        long Start = System.nanoTime();
+        
 		ArrayList<String> test = this.sectionPreprocessing(filename);
-<<<<<<< HEAD
-		System.out.println(test.size());
-        long endTime = System.nanoTime();
-        System.out.println((endTime-Start)/1000000000);
-
-
-		/*String word, currentTitle = null;
-	        WikiItem current, tmp;
-            long Start = System.nanoTime();
-	        try {
-	            Scanner input = new Scanner(new File(filename), "UTF-8");
-	            word = input.next().toLowerCase();
-	            if(x == 0 && !word.equals(null)){
-	            	currentTitle = word;
-	            	x = 1;
-	            }
-
-	            start = new WikiItem(word, currentTitle, null);
-	            current = start;
-	            while (input.hasNext()) {   // Read all words in input
-	                word = input.next();
-	                if(x == 0 && !word.equals(null)){
-		            	currentTitle = word;
-		            	x = 1;
-		            }else if(x == 1 && word.equals("---END.OF.DOCUMENT---")){
-		            	x = 0;
-		            }
-	                //System.out.println(word);
-
-	                if(!ContainsAddString(wikiM.get(current.WikiNR), word, currentTitle)){
-	                	tmp = new WikiItem(word, currentTitle, null);
-	                	current.next = tmp;
-	                	current = tmp;
-	                	wikiM.add(current);
-	                }
-	            }
-	            input.close();
-	        } catch (FileNotFoundException e) {
-	            System.out.println("Error reading file " + filename);
-	        }
-=======
+        
 		for(int i = 0; i < test.size(); i++){
 			this.sectionIndexing(test.get(i));
 		}
->>>>>>> origin/master
-
+        
 		long endTime = System.nanoTime();
 		System.out.println((endTime-Start)/1000000000);
 	}
