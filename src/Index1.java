@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Index1{
-	int x = 0;
 
-	WikiItem start;
+	WikiItem start, tmp;
 	wikiMap wikiM = new wikiMap();
 
 	private class WikiItem {
@@ -34,7 +33,7 @@ public class Index1{
 			}
 		}
 
-		
+
 
 		public void add(WikiItem w){
 			mapList.get(w.WikiNR % mapList.size()).add(w);
@@ -61,6 +60,7 @@ public class Index1{
 				}
 				section += line;
 			}
+			input.close();
 			return sections;
 
 		} catch (FileNotFoundException e) {
@@ -68,7 +68,25 @@ public class Index1{
 		}
 		return null;
 	}
-	
+
+	public void sectionIndexing(String str){
+		Scanner input = new Scanner(str);
+		String title = input.next();
+		String word = title;
+		start = new WikiItem(word, title, null);
+
+
+		while (input.hasNext()) {   // Read all words in input
+			word = input.next();
+			if(!ContainsAddString(wikiM.get(start.WikiNR), word, title)){
+				tmp = new WikiItem(word, title, null);
+				start.next = tmp;
+				start = tmp;
+				wikiM.add(start);
+			}
+		}
+	}
+
 	boolean ContainsAddString(ArrayList<WikiItem> list, String string, String currentTitle){
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i).str.equals(string)){
@@ -85,48 +103,15 @@ public class Index1{
 	}
 
 	public Index1(String filename) {
+		long Start = System.nanoTime();
 
 		ArrayList<String> test = this.sectionPreprocessing(filename);
-		System.out.println(test.size());
+		for(int i = 0; i < test.size(); i++){
+			this.sectionIndexing(test.get(i));
+		}
 
-
-		/*String word, currentTitle = null;
-	        WikiItem current, tmp;
-            long Start = System.nanoTime();
-	        try {
-	            Scanner input = new Scanner(new File(filename), "UTF-8");
-	            word = input.next().toLowerCase();
-	            if(x == 0 && !word.equals(null)){
-	            	currentTitle = word;
-	            	x = 1;
-	            }
-
-	            start = new WikiItem(word, currentTitle, null);
-	            current = start;
-	            while (input.hasNext()) {   // Read all words in input
-	                word = input.next();
-	                if(x == 0 && !word.equals(null)){
-		            	currentTitle = word;
-		            	x = 1;
-		            }else if(x == 1 && word.equals("---END.OF.DOCUMENT---")){
-		            	x = 0;
-		            }
-	                //System.out.println(word);
-
-	                if(!ContainsAddString(wikiM.get(current.WikiNR), word, currentTitle)){
-	                	tmp = new WikiItem(word, currentTitle, null);
-	                	current.next = tmp;
-	                	current = tmp;
-	                	wikiM.add(current);
-	                }
-	            }
-	            input.close();
-	        } catch (FileNotFoundException e) {
-	            System.out.println("Error reading file " + filename);
-	        }
-
-            long endTime = System.nanoTime();
-            System.out.println((endTime-Start)/1000000000);*/
+		long endTime = System.nanoTime();
+		System.out.println((endTime-Start)/1000000000);
 	}
 
 	public boolean search(String searchstr) {
