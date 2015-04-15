@@ -33,8 +33,6 @@ public class Index1{
 			}
 		}
 
-
-
 		public void add(WikiItem w){
 			mapList.get(w.WikiNR % mapList.size()).add(w);
 		}
@@ -75,9 +73,10 @@ public class Index1{
 		String word = title;
 		start = new WikiItem(word, title, null);
 
-
 		while (input.hasNext()) {   // Read all words in input
 			word = input.next();
+			str.replace(word, "");
+			
 			if(!ContainsAddString(wikiM.get(start.WikiNR), word, title)){
 				tmp = new WikiItem(word, title, null);
 				start.next = tmp;
@@ -88,17 +87,16 @@ public class Index1{
 	}
 
 	boolean ContainsAddString(ArrayList<WikiItem> list, String string, String currentTitle){
+	
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i).str.equals(string)){
-				if(!list.get(i).title.contains(currentTitle)){
-					list.get(i).title += "\n";
-					list.get(i).title += currentTitle;
+					list.get(i).title += "\n" + currentTitle;
 					return true;
 				}else{
 					return false;
 				}
 			}
-		}
+		
 		return false;
 	}
 
@@ -200,5 +198,4 @@ public class Index1{
 	        }*/
 		//console.close();
 	}
-
 }
