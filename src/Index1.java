@@ -32,11 +32,6 @@ public class Index1{
 				mapList.add(list);
 			}
 		}
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> origin/master
 		public void add(WikiItem w){
             mapList.get(w.WikiNR % mapList.size()).add(w);
 		}
@@ -79,7 +74,7 @@ public class Index1{
 
 		while (input.hasNext()) {   // Read all words in input
 			word = input.next();
-			str.replace(word, "");
+			//str = str.replace(word, "");
 			
 			if(!ContainsAddString(wikiM.get(start.WikiNR), word, title)){
 				tmp = new WikiItem(word, title, null);
@@ -91,28 +86,15 @@ public class Index1{
 	}
 
 	boolean ContainsAddString(ArrayList<WikiItem> list, String string, String currentTitle){
-<<<<<<< HEAD
-        for(WikiItem i : list){
-			if(i.str.equals(string)){
-				if(!i.title.contains(currentTitle)){
-					i.title += "\n" + currentTitle;
-=======
-	
-		for(int i = 0; i < list.size(); i++){
+
+        for(int i = 0; i < list.size(); i++){
 			if(list.get(i).str.equals(string)){
 					list.get(i).title += "\n" + currentTitle;
->>>>>>> origin/master
 					return true;
 				}else{
 					return false;
 				}
 			}
-<<<<<<< HEAD
-		}
-        
-=======
-		
->>>>>>> origin/master
 		return false;
 	}
 
@@ -156,11 +138,13 @@ public class Index1{
 	public static void main(String[] args) {
 		System.out.println("Preprocessing " + args[0]);
 		Index1 i = new Index1(args[0]);
+        
 		GUI g = new GUI(i);
-		//Scanner console = new Scanner(System.in);
-		/*for (;;) {
-	            System.out.println("Input search string or type exit to stop");
-	            String searchstr = GUI.editText.getText();
+		Scanner console = new Scanner(System.in);
+        System.out.println("Input search string or type exit to stop");
+        String searchstr = console.next();
+		for (;;) {
+            
 	            if (searchstr.equals("exit")) {
 	                break;
 	            }
@@ -169,7 +153,6 @@ public class Index1{
 	            } else {
 	                System.out.println(searchstr + " does not exist");
 	            }
-	        }*/
-		//console.close();
+	        }
 	}
 }
