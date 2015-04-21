@@ -24,7 +24,7 @@ public class Index1{
 
 	public class wikiMap{
 		ArrayList<ArrayList<WikiItem>> mapList = new ArrayList<ArrayList<WikiItem>>();
-
+        
 		wikiMap(){
 
 			for(int i = 0; i <25; i++){
@@ -32,9 +32,8 @@ public class Index1{
 				mapList.add(list);
 			}
 		}
-
 		public void add(WikiItem w){
-			mapList.get(w.WikiNR % mapList.size()).add(w);
+            mapList.get(w.WikiNR % mapList.size()).add(w);
 		}
 
 		public ArrayList<WikiItem> get(int i){
@@ -75,7 +74,7 @@ public class Index1{
 
 		while (input.hasNext()) {   // Read all words in section
 			word = input.next();
-			str.replace(word, "");
+			//str = str.replace(word, "");
 			
 			if(!ContainsAddString(wikiM.get(start.WikiNR), word, title)){
 				tmp = new WikiItem(word, title, null);
@@ -87,8 +86,8 @@ public class Index1{
 	}
 
 	boolean ContainsAddString(ArrayList<WikiItem> list, String string, String currentTitle){
-	
-		for(int i = 0; i < list.size(); i++){
+
+        for(int i = 0; i < list.size(); i++){
 			if(list.get(i).str.equals(string)){
 					list.get(i).title += "\n" + currentTitle;
 					return true;
@@ -96,17 +95,11 @@ public class Index1{
 					return false;
 				}
 			}
-		
 		return false;
 	}
 
 	public Index1(String filename) {
 		long Start = System.nanoTime();
-
-		ArrayList<String> test = this.sectionPreprocessing(filename);
-		System.out.println(test.size());
-        long endTime = System.nanoTime();
-        System.out.println((endTime-Start)/1000000000);
 
 
 		/*String word, currentTitle = null;
@@ -147,7 +140,13 @@ public class Index1{
 		for(int i = 0; i < test.size(); i++){
 			this.sectionIndexing(test.get(i));
 		}
-
+        
+		ArrayList<String> test = this.sectionPreprocessing(filename);
+        
+		for(int i = 0; i < test.size(); i++){
+			this.sectionIndexing(test.get(i));
+		}
+        
 		long endTime = System.nanoTime();
 		System.out.println((endTime-Start)/1000000000);*/
 	}
@@ -179,11 +178,13 @@ public class Index1{
 	public static void main(String[] args) {
 		System.out.println("Preprocessing " + args[0]);
 		Index1 i = new Index1(args[0]);
+        
 		GUI g = new GUI(i);
-		//Scanner console = new Scanner(System.in);
-		/*for (;;) {
-	            System.out.println("Input search string or type exit to stop");
-	            String searchstr = GUI.editText.getText();
+		Scanner console = new Scanner(System.in);
+        System.out.println("Input search string or type exit to stop");
+        String searchstr = console.next();
+		for (;;) {
+            
 	            if (searchstr.equals("exit")) {
 	                break;
 	            }
@@ -192,7 +193,6 @@ public class Index1{
 	            } else {
 	                System.out.println(searchstr + " does not exist");
 	            }
-	        }*/
-		//console.close();
+	        }
 	}
 }
