@@ -73,7 +73,7 @@ public class Index1{
 		String word = title;
 		start = new WikiItem(word, title, null);
 
-		while (input.hasNext()) {   // Read all words in input
+		while (input.hasNext()) {   // Read all words in section
 			word = input.next();
 			str.replace(word, "");
 			
@@ -103,9 +103,7 @@ public class Index1{
 	public Index1(String filename) {
 		long Start = System.nanoTime();
 
-        long Start = System.nanoTime();
 		ArrayList<String> test = this.sectionPreprocessing(filename);
-<<<<<<< HEAD
 		System.out.println(test.size());
         long endTime = System.nanoTime();
         System.out.println((endTime-Start)/1000000000);
@@ -145,14 +143,13 @@ public class Index1{
 	        } catch (FileNotFoundException e) {
 	            System.out.println("Error reading file " + filename);
 	        }
-=======
+	        
 		for(int i = 0; i < test.size(); i++){
 			this.sectionIndexing(test.get(i));
 		}
->>>>>>> origin/master
 
 		long endTime = System.nanoTime();
-		System.out.println((endTime-Start)/1000000000);
+		System.out.println((endTime-Start)/1000000000);*/
 	}
 
 	public boolean search(String searchstr) {
@@ -166,13 +163,13 @@ public class Index1{
 
 				/*while(!current.next.str.equals("---END.OF.DOCUMENT-----")){
 	            		current = current.next;
-	            	}*/
+	            	}
 				current = current.next;
 
 				if(current.next == null){
 					return true;
 				}
-				return true;
+				return true;*/
 			}
 			current = current.next;
 		}
