@@ -1,12 +1,18 @@
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Index1{
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class Index1 implements KeyListener{
 
 	WikiItem start, tmp;
 	wikiMap wikiM = new wikiMap();
+	GUI g = null;
 
 	private class WikiItem {
 		String str;
@@ -139,7 +145,7 @@ public class Index1{
 	        
 		for(int i = 0; i < test.size(); i++){
 			this.sectionIndexing(test.get(i));
-		}
+		}*/
         
 		ArrayList<String> test = this.sectionPreprocessing(filename);
         
@@ -148,7 +154,7 @@ public class Index1{
 		}
         
 		long endTime = System.nanoTime();
-		System.out.println((endTime-Start)/1000000000);*/
+		System.out.println((endTime-Start)/1000000000);
 	}
 
 	public boolean search(String searchstr) {
@@ -179,7 +185,7 @@ public class Index1{
 		System.out.println("Preprocessing " + args[0]);
 		Index1 i = new Index1(args[0]);
         
-		GUI g = new GUI(i);
+		g = new GUI(i);
 		Scanner console = new Scanner(System.in);
         System.out.println("Input search string or type exit to stop");
         String searchstr = console.next();
@@ -194,5 +200,30 @@ public class Index1{
 	                System.out.println(searchstr + " does not exist");
 	            }
 	        }
+	}
+	
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getKeyCode() == KeyEvent.VK_ENTER){
+			//System.out.println(editText.getText());
+			this.search(g.editText.getText().toLowerCase());
+			g.editText.setText(null);
+		}
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getKeyCode() == KeyEvent.VK_ENTER){
+			g.editText.setText(null);
+		}
 	}
 }
