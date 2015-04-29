@@ -119,7 +119,7 @@ public class Index1 {
 		while(current != null) {
 			if(current.str.equals(searchstr)) {
 				System.out.println("------------------------------------");
-				System.out.println("You are searching for:              " + searchstr);
+				System.out.println("You are searching for: " + searchstr);
 				System.out.println("Search string \"" + searchstr + "\" found in: \n" + (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 				current = current.next;
 
