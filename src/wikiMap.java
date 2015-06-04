@@ -5,7 +5,7 @@ public class wikiMap {
     ArrayList<ArrayList<WikiItem>> mapList = new ArrayList<ArrayList<WikiItem>>();
 
     public wikiMap(){
-            for(int i = 0; i <2000; i++){
+            for(int i = 0; i <8000; i++){
                 ArrayList<WikiItem> list = new ArrayList<WikiItem>();
                 mapList.add(list);
             }

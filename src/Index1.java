@@ -2,11 +2,13 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.*;
 
 public class Index1 {
 
@@ -76,10 +78,10 @@ public class Index1 {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
 		WikiItem current, tmp;
-		
+
 		try {
 			BufferedReader bufferR = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-			Scanner input = new Scanner(new File(filename), "UTF-8");
+			Scanner input = new Scanner(bufferR);
 			word = input.next().toLowerCase();
 			if(x == 0 && !word.equals(null)){
 				currentTitle = word;
@@ -89,12 +91,18 @@ public class Index1 {
 			start = new WikiItem(word, currentTitle, null);
 			current = start;
 			while (input.hasNext()) {   // Read all words in input
-				word = input.next();
-				if(x == 0 && !word.equals(null)){
-					currentTitle = word;
-					x = 1;
-				}else if(x == 1 && word.equals("---END.OF.DOCUMENT---")){
-					x = 0;
+				//word = input.next();
+				if(x == 0){
+					word = input.nextLine();
+					if(!word.isEmpty()){
+						currentTitle = word;
+						x = 1;
+					}
+				}else if(x == 1){
+					word = input.next();
+					if(word.equals("---END.OF.DOCUMENT---")){
+						x = 0;
+					}
 				}
 				//System.out.println(word);
 
@@ -117,19 +125,95 @@ public class Index1 {
 	public boolean search(String searchstr) {
 		WikiItem current = start;
 		while(current != null) {
-			if(current.str.equals(searchstr)) {
+			if(current.str.equals(searchstr.toLowerCase())) {
 				System.out.println("------------------------------------");
 				System.out.println("You are searching for: " + searchstr);
-				System.out.println("Search string \"" + searchstr + "\" found in: \n" + (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
-				current = current.next;
-
-				if(current.next == null){
-					return true;
-				}
+				System.out.println("Search string \"" + searchstr + "\" found in: \n"
+						+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+				
 				return true;
 			}
 			current = current.next;
 		}
+		System.out.println("------------------------------------");
+		System.out.println("You are searching for: " + searchstr);
+		System.out.println("Not found.");
+		return false;
+
+
+	}
+	
+	
+
+	public ArrayList<String> arraySearch(String searchstr) {
+		WikiItem current = start;
+		while(current != null) {
+			if(current.str.equals(searchstr.toLowerCase())) {
+				return (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title;
+			}
+			current = current.next;
+		}
+		ArrayList<String> nullList = new ArrayList<String>();
+		return nullList;
+	}
+
+	public boolean boolSearch(String searchString){
+
+		String[] parts = searchString.split(" ");
+
+		if(parts.length == 1){
+			
+			return search(parts[0]);
+		}else if(parts.length < 3 || parts.length > 3){
+			System.out.println("Use or, and or not as separator in multiple word search.");
+		}else if(parts.length == 3){			
+			if(parts[1].equals("and")){
+				ArrayList<String> part1 = arraySearch(parts[0]);
+				ArrayList<String> part2 = arraySearch(parts[2]);
+				
+				if(!part1.isEmpty() && !part2.isEmpty()){
+
+					ArrayList<String> union = new ArrayList<String>();
+					for(String part : part1){
+						if(part2.contains(part)){
+							union.add(part);
+						}
+					}
+
+					System.out.println("------------------------------------");
+					System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
+					System.out.println("Search strings are found in: \n" + union);
+				}else if(!part1.isEmpty() || !part2.isEmpty()){
+					System.out.println("The search words weren't found in the same document.");
+				}
+			}else if(parts[1].equals("or")){
+				ArrayList<String> part1 = arraySearch(parts[0]);
+				ArrayList<String> part2 = arraySearch(parts[2]);
+				for(String part : part2){
+					if(!part1.contains(part)){
+						part1.add(part);
+					}
+				}
+				System.out.println("------------------------------------");
+				System.out.println("You are searching for: " + parts[0] + " or " + parts[2]);
+				System.out.println("Search strings are found in: \n" + part1);
+			}else if(parts[1].equals("not")){
+				ArrayList<String> part1 = arraySearch(parts[0]);
+				ArrayList<String> part2 = arraySearch(parts[2]);
+				ArrayList<String> exclude = new ArrayList<String>();
+				for(String part : part1){
+					if(!part2.contains(part)){
+						exclude.add(part);
+					}
+				}
+
+				System.out.println("------------------------------------");
+				System.out.println("You are searching for: " + parts[0] + " not " + parts[2]);
+				System.out.println("Search strings are found in: \n" + exclude);
+			}else{
+				System.out.println("Use or, and or not as separator in multiple word search.");
+			}
+		}	
 		return false;
 	}
 
@@ -144,11 +228,6 @@ public class Index1 {
 			String searchstr = console.nextLine();
 			if (searchstr.equals("exit")) {
 				break;
-			}
-			if (i.search(searchstr)) {
-				System.out.println(searchstr + " exists");
-			} else {
-				System.out.println(searchstr + " does not exist");
 			}
 		}
 	}

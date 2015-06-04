@@ -89,7 +89,7 @@ public class GUI extends JFrame implements MouseListener, KeyListener {
 		// TODO Auto-generated method stub
 		if(e.getKeyCode() == KeyEvent.VK_ENTER){
 			//System.out.println(editText.getText());
-			i.search(editText.getText().toLowerCase());
+			i.boolSearch(editText.getText().toLowerCase());
 			editText.setText(null);
 		}
 		
