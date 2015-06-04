@@ -80,13 +80,8 @@ public class Index1 {
 		WikiItem current, tmp;
 
 		try {
-<<<<<<< HEAD
 			BufferedReader bufferR = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
 			Scanner input = new Scanner(bufferR);
-=======
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-			Scanner input = new Scanner(br);
->>>>>>> origin/master
 			word = input.next().toLowerCase();
 			if(x == 0 && !word.equals(null)){
 				currentTitle = word;
