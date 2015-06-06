@@ -92,9 +92,9 @@ public class Index1 {
 			start = new WikiItem(word, currentTitle, null);
 			current = start;
 			while (input.hasNext()) {   // Read all words in input
-				
-				/* x oscillates between 0 and 1 indicating whether 
-				  the word is a title or a word within a title */
+
+				/* x oscillates between 0 and 1 indicating whether the word  
+				  is a title or a word within the document of that title*/
 				if(x == 0){
 					word = input.nextLine();
 					if(!word.isEmpty()){
@@ -120,7 +120,7 @@ public class Index1 {
 		} catch (FileNotFoundException e) {
 			System.out.println("Error reading file " + filename);
 		}
-
+		// Counter for time spent on indexing 
 		long endTime = System.nanoTime();
 		System.out.println((endTime-Starttime)/1000000000);
 	}
@@ -143,6 +143,92 @@ public class Index1 {
 		return false;
 	}
 
+	//Method handling the boolean searches with logical AND, NOT and OR
+	public boolean boolSearch(String searchString){
+
+		String[] parts = searchString.split(" ");
+
+			//Limiting searches to either 1 search word or two separated by a logical operator
+		if(parts.length == 1 && !parts[0].startsWith("*")){
+			return search(parts[0]);
+
+			// Finding all the words starting with the specified prefix.
+		}else if(parts.length == 1 && parts[0].startsWith("*")){
+			String prefix = parts[0].substring(1);
+			WikiItem current = start;
+			while(current != null) {
+				if(current.str.startsWith(prefix)) {
+					System.out.println("------------------------------------");
+					System.out.println("You are searching for words with the prefix: " + prefix);
+					System.out.println("Search prefix \"" + prefix + "\" found in: \n"
+							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+					return true;
+				}
+				current = current.next;
+			}
+			System.out.println("------------------------------------");
+			System.out.println("You are searching for words with the prefix: " + prefix);
+			System.out.println("Not found.");
+			return false;
+
+		}else if(parts.length < 3 || parts.length > 3){
+			System.out.println("Use or, and or not as separator in multiple word search.");
+
+		}else if(parts.length == 3){			
+			if(parts[1].equals("and")){
+				ArrayList<String> part1 = arraySearch(parts[0]);
+				ArrayList<String> part2 = arraySearch(parts[2]);
+
+				if(!part1.isEmpty() && !part2.isEmpty()){
+					ArrayList<String> union = new ArrayList<String>();
+
+					for(String part : part1){
+						if(part2.contains(part)){
+							union.add(part);
+						}
+					}
+
+					System.out.println("------------------------------------");
+					System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
+					System.out.println("Search strings are found in: \n" + union);
+
+				}else if(!part1.isEmpty() || !part2.isEmpty()){
+					System.out.println("The search words weren't found in the same document.");
+				}
+			}else if(parts[1].equals("or")){
+				ArrayList<String> part1 = arraySearch(parts[0]);
+				ArrayList<String> part2 = arraySearch(parts[2]);
+
+				for(String part : part2){
+					if(!part1.contains(part)){
+						part1.add(part);
+					}
+				}
+				System.out.println("------------------------------------");
+				System.out.println("You are searching for: " + parts[0] + " or " + parts[2]);
+				System.out.println("Search strings are found in: \n" + part1);
+
+			}else if(parts[1].equals("not")){
+				ArrayList<String> part1 = arraySearch(parts[0]);
+				ArrayList<String> part2 = arraySearch(parts[2]);
+				ArrayList<String> exclude = new ArrayList<String>();
+
+				for(String part : part1){
+					if(!part2.contains(part)){
+						exclude.add(part);
+					}
+				}
+				System.out.println("------------------------------------");
+				System.out.println("You are searching for: " + parts[0] + " not " + parts[2]);
+				System.out.println("Search strings are found in: \n" + exclude);
+
+			}else{
+				System.out.println("Use or, and or not as separator in multiple word search.");
+			}
+		}	
+		return false;
+	}
+
 	public ArrayList<String> arraySearch(String searchstr) {
 		WikiItem current = start;
 		while(current != null) {
@@ -153,73 +239,6 @@ public class Index1 {
 		}
 		ArrayList<String> nullList = new ArrayList<String>();
 		return nullList;
-	}
-
-	//Method handling the boolean searches with logical AND, NOT and OR
-	public boolean boolSearch(String searchString){
-
-		String[] parts = searchString.split(" ");
-
-		//Limiting searches to either 1 search word or two separated by a logical operator
-		if(parts.length == 1 && !parts[0].startsWith("*")){
-			return search(parts[0]);
-			
-		}else if(parts.length < 3 || parts.length > 3){
-			System.out.println("Use or, and or not as separator in multiple word search.");
-			
-		}else if(parts.length == 3){			
-			if(parts[1].equals("and")){
-				ArrayList<String> part1 = arraySearch(parts[0]);
-				ArrayList<String> part2 = arraySearch(parts[2]);
-
-				if(!part1.isEmpty() && !part2.isEmpty()){
-					ArrayList<String> union = new ArrayList<String>();
-					
-					for(String part : part1){
-						if(part2.contains(part)){
-							union.add(part);
-						}
-					}
-
-					System.out.println("------------------------------------");
-					System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
-					System.out.println("Search strings are found in: \n" + union);
-					
-				}else if(!part1.isEmpty() || !part2.isEmpty()){
-					System.out.println("The search words weren't found in the same document.");
-				}
-			}else if(parts[1].equals("or")){
-				ArrayList<String> part1 = arraySearch(parts[0]);
-				ArrayList<String> part2 = arraySearch(parts[2]);
-				
-				for(String part : part2){
-					if(!part1.contains(part)){
-						part1.add(part);
-					}
-				}
-				System.out.println("------------------------------------");
-				System.out.println("You are searching for: " + parts[0] + " or " + parts[2]);
-				System.out.println("Search strings are found in: \n" + part1);
-				
-			}else if(parts[1].equals("not")){
-				ArrayList<String> part1 = arraySearch(parts[0]);
-				ArrayList<String> part2 = arraySearch(parts[2]);
-				ArrayList<String> exclude = new ArrayList<String>();
-				
-				for(String part : part1){
-					if(!part2.contains(part)){
-						exclude.add(part);
-					}
-				}
-				System.out.println("------------------------------------");
-				System.out.println("You are searching for: " + parts[0] + " not " + parts[2]);
-				System.out.println("Search strings are found in: \n" + exclude);
-				
-			}else{
-				System.out.println("Use or, and or not as separator in multiple word search.");
-			}
-		}	
-		return false;
 	}
 
 	public static void main(String[] args) {
