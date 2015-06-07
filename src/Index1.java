@@ -123,16 +123,15 @@ public class Index1 {
 	}
 
 	public boolean search(String searchstr) {
-		WikiItem current = start;
-		while(current != null) {
-			if(current.str.equals(searchstr.toLowerCase())) {
+		ArrayList<WikiItem> hash = wikiM.get(searchstr.hashCode());
+		for(int i = 0; i < hash.size(); i++){
+			if(hash.get(i).str.equals(searchstr)){
 				System.out.println("------------------------------------");
 				System.out.println("You are searching for: " + searchstr);
 				System.out.println("Search string \"" + searchstr + "\" found in: \n"
-						+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+						+ hash.get(i).title);
 				return true;
 			}
-			current = current.next;
 		}
 		System.out.println("------------------------------------");
 		System.out.println("You are searching for: " + searchstr);
