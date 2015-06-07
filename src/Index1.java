@@ -150,6 +150,7 @@ public class Index1 {
 			return search(parts[0]);
 
 			// Finding all the words starting with the specified prefix.
+			// Can be made with regular expressions!
 		}else if(parts.length == 1 && parts[0].startsWith("*")){
 			String suffix = parts[0].substring(1);
 			WikiItem current = start;
@@ -168,6 +169,8 @@ public class Index1 {
 			System.out.println("Not found.");
 			return false;
 			
+			// Finding all the words ending on the specified suffix.
+			// Can be made with regular expressions!
 		}else if(parts.length == 1 && parts[0].endsWith("*")){
 			String prefix = parts[0].substring(0,parts[0].length()-1);
 			WikiItem current = start;
