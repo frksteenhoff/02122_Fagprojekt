@@ -60,7 +60,7 @@ public class Index1 {
 			word = input.next();
 
 			// Create new WikiItem, if it does not already exist
-			if(!ContainsAddString(wikiM.get(start.WikiNR), word, title)){
+			if(!stringTitleDuplicate(wikiM.get(start.WikiNR), word, title)){
 				tmp = new WikiItem(word, title, null);
 				start.next = tmp;
 				start = tmp;
@@ -70,7 +70,7 @@ public class Index1 {
 	}
 
 	// Method checking whether string to be added already exists or not
-	boolean ContainsAddString(ArrayList<WikiItem> list, String string, String currentTitle){
+	boolean stringTitleDuplicate(ArrayList<WikiItem> list, String string, String currentTitle){
 
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i).str.equals(string)){
@@ -107,6 +107,7 @@ public class Index1 {
 				if(x == 0){
 					word = input.nextLine();
 					if(!word.isEmpty()){
+						//Removes everything but alphanumeric characters
 						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						x = 1;
 					}
@@ -115,11 +116,11 @@ public class Index1 {
 					if(word.equals("---END.OF.DOCUMENT---")){
 						x = 0;
 					}
+					//Removes everything but alphanumeric characters
 					word = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				}
-				//System.out.println(word);
 
-				if(!word.equals("---END.OF.DOCUMENT---") && !ContainsAddString(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
+				if(!word.equals("---END.OF.DOCUMENT---") && !stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
 					tmp = new WikiItem(word, currentTitle, null);
 					current.next = tmp;
 					current = tmp;
@@ -132,24 +133,7 @@ public class Index1 {
 		}
 		// Counter for time spent on indexing 
 		long endTime = System.nanoTime();
-		System.out.println((endTime-Starttime)/1000000000);
-	}
-
-	public boolean search(String searchstr) {
-		ArrayList<WikiItem> hash = wikiM.get(Math.abs(searchstr.hashCode()));
-		for(int i = 0; i < hash.size(); i++){
-			if(hash.get(i).str.equals(searchstr)){
-				System.out.println("------------------------------------");
-				System.out.println("You are searching for: " + searchstr);
-				System.out.println("Search string \"" + searchstr + "\" found in: \n"
-						+ hash.get(i).title);
-				return true;
-			}
-		}
-		System.out.println("------------------------------------");
-		System.out.println("You are searching for: " + searchstr);
-		System.out.println("Not found.");
-		return false;
+		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec.");
 	}
 
 	//Method handling the boolean searches with logical AND, NOT and OR
@@ -171,7 +155,7 @@ public class Index1 {
 			boolSearch(parts);
 
 		}else if(parts.length < 3 || parts.length > 3){
-			System.out.println("No full-text search allowed. \n Use or, and or not as separator in multiple word search.");
+			System.out.println("No full-text search allowed. \n Use OR, AND or NOT as separator in multiple word search.");
 
 		}else{
 			System.out.println("Use or, and or not as separator in multiple word search.");
@@ -179,62 +163,93 @@ public class Index1 {
 		return false;
 	}
 
-	private boolean boolSearch(String[] parts) {
-		if(parts[1].equals("and")){
-			ArrayList<String> part1 = arraySearch(parts[0]);
-			ArrayList<String> part2 = arraySearch(parts[2]);
-
-			if(!part1.isEmpty() && !part2.isEmpty()){
-				ArrayList<String> union = new ArrayList<String>();
-
-				for(String part : part1){
-					if(part2.contains(part)){
-						union.add(part);
-					}
-				}
+	public boolean search(String searchstr) {
+		ArrayList<WikiItem> hash = wikiM.get(Math.abs(searchstr.hashCode()));
+		for(int i = 0; i < hash.size(); i++){
+			if(hash.get(i).str.equals(searchstr)){
 				System.out.println("------------------------------------");
-				System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
-				System.out.println("Search strings are both found in: \n" + union);
+				System.out.println("You are searching for: " + searchstr);
+				System.out.println("Search string \"" + searchstr + "\" found in: \n"
+						+ hash.get(i).title);
 				return true;
-
-			}else if(!part1.isEmpty() || !part2.isEmpty()){
-				System.out.println("The search words weren't found in the same document.");
-				return false;
 			}
+		}
+		System.out.println("------------------------------------");
+		System.out.println("You are searching for: " + searchstr);
+		System.out.println("Not found.");
+		return false;
+	}
+
+	private boolean boolSearch(String[] parts) {
+
+		if(parts[1].equals("and")){
+			booleanAND(parts);
+
 		}else if(parts[1].equals("or")){
-			ArrayList<String> part1 = arraySearch(parts[0]);
-			ArrayList<String> part2 = arraySearch(parts[2]);
-
-			for(String part : part2){
-				if(!part1.contains(part)){
-					part1.add(part);
-				}
-			}
-			System.out.println("------------------------------------");
-			System.out.println("You are searching for: " + parts[0] + " or " + parts[2]);
-			System.out.println("Search strings are found in: \n" + part1);
-			return true;
+			booleanOR(parts);
 
 		}else if(parts[1].equals("not")){
-			ArrayList<String> part1 = arraySearch(parts[0]);
-			ArrayList<String> part2 = arraySearch(parts[2]);
-			ArrayList<String> exclude = new ArrayList<String>();
-
-			for(String part : part1){
-				if(!part2.contains(part)){
-					exclude.add(part);
-				}
-			}
-			System.out.println("------------------------------------");
-			System.out.println("You are searching for: " + parts[0] + " not " + parts[2]);
-			System.out.println("Search strings are found in: \n" + exclude);
-			return true;
+			booleanNOT(parts);
 		}
 		return false;
 	}
 
-	// Finding all the words ending on the specified suffix.
-	// Can be made with regular expressions!
+	private boolean booleanAND(String[] parts) {
+		ArrayList<String> part1 = arraySearch(parts[0]);
+		ArrayList<String> part2 = arraySearch(parts[2]);
+
+		if(!part1.isEmpty() && !part2.isEmpty()){
+			ArrayList<String> union = new ArrayList<String>();
+
+			for(String part : part1){
+				if(part2.contains(part)){
+					union.add(part);
+				}
+			}
+			System.out.println("------------------------------------");
+			System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
+			System.out.println("Search strings are both found in: \n" + union);
+			return true;
+
+		}else if(!part1.isEmpty() || !part2.isEmpty()){
+			System.out.println("The search words weren't found in the same document.");
+			return false;
+		}
+		return false;
+	}
+
+	private boolean booleanOR(String[] parts) {
+		ArrayList<String> part1 = arraySearch(parts[0]);
+		ArrayList<String> part2 = arraySearch(parts[2]);
+
+		for(String part : part2){
+			if(!part1.contains(part)){
+				part1.add(part);
+			}
+		}
+		System.out.println("------------------------------------");
+		System.out.println("You are searching for: " + parts[0] + " or " + parts[2]);
+		System.out.println("Search strings are found in: \n" + part1);
+		return true;
+	}
+
+	private boolean booleanNOT(String[] parts) {
+		ArrayList<String> part1 = arraySearch(parts[0]);
+		ArrayList<String> part2 = arraySearch(parts[2]);
+		ArrayList<String> exclude = new ArrayList<String>();
+
+		for(String part : part1){
+			if(!part2.contains(part)){
+				exclude.add(part);
+			}
+		}
+		System.out.println("------------------------------------");
+		System.out.println("You are searching for: " + parts[0] + " not " + parts[2]);
+		System.out.println("Search strings are found in: \n" + exclude);
+		return true;
+	}
+
+	// Finding all the words ending on the specified suffix. (can be made with regular expressions!)
 	private boolean suffixSearch(String[] parts) {
 		String suffix = parts[0].substring(1);
 		ArrayList<String> documents = new ArrayList<>();
@@ -261,11 +276,9 @@ public class Index1 {
 			System.out.println("Search prefix \"" + suffix + "\" found in: \n" + documents);
 			return true;
 		}
-
 	}
 
-	//Finding all the words starting with the specified prefix.
-	// Can be made with regular expressions!
+	//Finding all the words starting with the specified prefix. (can be made with regular expressions!)
 	private boolean prefixSearch(String[] parts) {
 		String prefix = parts[0].substring(0,parts[0].length()-1);
 		ArrayList<String> documents = new ArrayList<>();
@@ -292,7 +305,6 @@ public class Index1 {
 			System.out.println("Search prefix \"" + prefix + "\" found in: \n" + documents);
 			return true;
 		}
-
 	}
 
 	public ArrayList<String> arraySearch(String searchstr) {
