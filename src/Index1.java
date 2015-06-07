@@ -62,10 +62,9 @@ public class Index1 {
 			if(list.get(i).str.equals(string)){
 				if(!list.get(i).title.contains(currentTitle)){
 					list.get(i).title.add(currentTitle);
+					return true;
 				}
 				return true;
-			}else{
-				return false;
 			}
 		}
 		return false;
@@ -155,13 +154,14 @@ public class Index1 {
 			WikiItem current = start;
 			while(current != null) {
 				if(current.str.startsWith(prefix)) {
-					System.out.println("here: " + prefix +" and "+ current.str);
-					System.out.println("------------------------------------");
+					System.out.println("here: " + current.str + ", " + (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+					/*System.out.println("------------------------------------");
 					System.out.println("You are searching for words with the prefix: \"" + prefix + "\"");
 					System.out.println("Search prefix \"" + prefix + "\" found in: \n"
-							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);*/
 				}
 				current = current.next;
+				//return true;
 			}
 			System.out.println("------------------------------------");
 			System.out.println("You are searching for words with the prefix: \"" + prefix + "\"");
@@ -175,11 +175,11 @@ public class Index1 {
 			WikiItem current = start;
 			while(current != null) {
 				if(current.str.endsWith(suffix)) {
-					System.out.println("here: " + suffix +" and "+ current.str);
-					System.out.println("------------------------------------");
+					System.out.println("here: " + (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title +", "+ current.str);
+					/* System.out.println("------------------------------------");
 					System.out.println("You are searching for words with the suffix: \"" + suffix+ "\"");
 					System.out.println("Search suffix \"" + suffix + "\" found in: \n"
-							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);*/
 				}
 				current = current.next;
 			}
