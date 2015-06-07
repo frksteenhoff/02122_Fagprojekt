@@ -94,7 +94,7 @@ public class Index1 {
 				if(x == 0){
 					word = input.nextLine();
 					if(!word.isEmpty()){
-						currentTitle = word;
+						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						x = 1;
 					}
 				}else if(x == 1){
@@ -102,10 +102,11 @@ public class Index1 {
 					if(word.equals("---END.OF.DOCUMENT---")){
 						x = 0;
 					}
+					word = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				}
 				//System.out.println(word);
 
-				if(!ContainsAddString(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
+				if(!word.equals("---END.OF.DOCUMENT---") && (!ContainsAddString(wikiM.get(Math.abs(word.hashCode())), word, currentTitle))){
 					tmp = new WikiItem(word, currentTitle, null);
 					current.next = tmp;
 					current = tmp;
