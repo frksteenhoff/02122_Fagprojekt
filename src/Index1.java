@@ -150,42 +150,43 @@ public class Index1 {
 
 			// Finding all the words starting with the specified prefix.
 			// Can be made with regular expressions!
-		}else if(parts.length == 1 && parts[0].startsWith("*")){
-			String suffix = parts[0].substring(1);
-			ArrayList<WikiItem> hash = wikiM.get(suffix.hashCode());
-			for(int i = 0; i < hash.size(); i++){
-				if(hash.get(i).str.endsWith(suffix)){
+		}else if(parts.length == 1 && parts[0].endsWith("*")){
+			String prefix = parts[0].substring(0,parts[0].length()-1);
+			WikiItem current = start;
+			while(current != null) {
+				if(current.str.startsWith(prefix)) {
+					System.out.println("here: " + prefix +" and "+ current.str);
 					System.out.println("------------------------------------");
-					System.out.println("You are searching for words with the suffix: " + suffix);
-					System.out.println("Search string \"" + suffix + "\" found in: \n"
-							+ hash.get(i).title);
-					return true;
+					System.out.println("You are searching for words with the prefix: \"" + prefix + "\"");
+					System.out.println("Search prefix \"" + prefix + "\" found in: \n"
+							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 				}
+				current = current.next;
 			}
 			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the suffix: " + suffix);
+			System.out.println("You are searching for words with the prefix: \"" + prefix + "\"");
 			System.out.println("Not found.");
 			return false;
 
 			// Finding all the words ending on the specified suffix.
 			// Can be made with regular expressions!
-		}else if(parts.length == 1 && parts[0].endsWith("*")){
-			String prefix = parts[0].substring(0,parts[0].length()-1);
-			ArrayList<WikiItem> hash = wikiM.get(prefix.hashCode());
-			for(int i = 0; i < hash.size(); i++){
-				if(hash.get(i).str.startsWith(prefix)){
+		}else if(parts.length == 1 && parts[0].startsWith("*")){
+			String suffix = parts[0].substring(1);
+			WikiItem current = start;
+			while(current != null) {
+				if(current.str.endsWith(suffix)) {
+					System.out.println("here: " + suffix +" and "+ current.str);
 					System.out.println("------------------------------------");
-					System.out.println("You are searching for words with the prefix: " + prefix);
-					System.out.println("Search string \"" + prefix + "\" found in: \n"
-							+ hash.get(i).title);
-					return true;
+					System.out.println("You are searching for words with the suffix: \"" + suffix+ "\"");
+					System.out.println("Search suffix \"" + suffix + "\" found in: \n"
+							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 				}
+				current = current.next;
 			}
 			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the prefix: " + prefix);
+			System.out.println("You are searching for words with the suffix: \"" + suffix + "\"");
 			System.out.println("Not found.");
 			return false;
-
 
 		}else if(parts.length < 3 || parts.length > 3){
 			System.out.println("No full-text search allowed. \n Use or, and or not as separator in multiple word search.");
