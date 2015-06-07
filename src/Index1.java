@@ -168,7 +168,7 @@ public class Index1 {
 			return false;
 
 		}else if(parts.length < 3 || parts.length > 3){
-			System.out.println("Use or, and or not as separator in multiple word search.");
+			System.out.println("No full-text search allowed. \n Use or, and or not as separator in multiple word search.");
 
 		}else if(parts.length == 3){			
 			if(parts[1].equals("and")){
@@ -183,10 +183,9 @@ public class Index1 {
 							union.add(part);
 						}
 					}
-
 					System.out.println("------------------------------------");
 					System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
-					System.out.println("Search strings are found in: \n" + union);
+					System.out.println("Search strings are both found in: \n" + union);
 
 				}else if(!part1.isEmpty() || !part2.isEmpty()){
 					System.out.println("The search words weren't found in the same document.");
