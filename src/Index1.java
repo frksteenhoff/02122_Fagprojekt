@@ -146,12 +146,30 @@ public class Index1 {
 		String[] parts = searchString.split(" ");
 
 			//Limiting searches to either 1 search word or two separated by a logical operator
-		if(parts.length == 1 && !parts[0].startsWith("*")){
+		if(parts.length == 1 && (!parts[0].startsWith("*") && !parts[0].endsWith("*"))){
 			return search(parts[0]);
 
 			// Finding all the words starting with the specified prefix.
 		}else if(parts.length == 1 && parts[0].startsWith("*")){
-			String prefix = parts[0].substring(1);
+			String suffix = parts[0].substring(1);
+			WikiItem current = start;
+			while(current != null) {
+				if(current.str.startsWith(suffix)) {
+					System.out.println("------------------------------------");
+					System.out.println("You are searching for words with the suffix: " + suffix);
+					System.out.println("Search suffix \"" + suffix + "\" found in: \n"
+							+ (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+					return true;
+				}
+				current = current.next;
+			}
+			System.out.println("------------------------------------");
+			System.out.println("You are searching for words with the prefix: " + suffix);
+			System.out.println("Not found.");
+			return false;
+			
+		}else if(parts.length == 1 && parts[0].endsWith("*")){
+			String prefix = parts[0].substring(0,parts[0].length()-1);
 			WikiItem current = start;
 			while(current != null) {
 				if(current.str.startsWith(prefix)) {
@@ -167,7 +185,8 @@ public class Index1 {
 			System.out.println("You are searching for words with the prefix: " + prefix);
 			System.out.println("Not found.");
 			return false;
-
+			
+			
 		}else if(parts.length < 3 || parts.length > 3){
 			System.out.println("No full-text search allowed. \n Use or, and or not as separator in multiple word search.");
 
