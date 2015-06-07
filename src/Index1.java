@@ -136,7 +136,7 @@ public class Index1 {
 		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec.");
 	}
 
-	//Method handling the boolean searches with logical AND, NOT and OR
+	//Overall search logic
 	public boolean searchLogic(String searchString){
 
 		String[] parts = searchString.split(" ");
@@ -180,7 +180,33 @@ public class Index1 {
 		return false;
 	}
 
-	private boolean boolSearch(String[] parts) {
+	/*private ArrayList<String> splitSearch(String[] parts){
+	
+		if(parts.length > 3){
+			String [] start = {parts[0], parts[1], parts[2]};
+			String [] rest = new String[20];
+			
+		for(int j = 3; j < parts.length; j++){
+			rest[j-3] = parts[j];
+			}
+		splitSearch(rest);
+		
+		}else if(parts.length < 3){
+			ArrayList<String> first = boolSearch(start);
+			first.add(parts[0]);
+			first.add(parts[1]);
+			
+		}
+		
+		for(int i = 1 ; i < parts.length ; i++){
+			if(i % 2 == 1 && (parts[i] == "and" || parts[i] == "or" || parts[i] == "not")){
+				
+			}
+		}
+		return null;
+	}*/
+	
+	private ArrayList<String> boolSearch(String[] parts) {
 
 		if(parts[1].equals("and")){
 			booleanAND(parts);
@@ -191,7 +217,7 @@ public class Index1 {
 		}else if(parts[1].equals("not")){
 			booleanNOT(parts);
 		}
-		return false;
+		return null;
 	}
 
 	private boolean booleanAND(String[] parts) {
@@ -262,7 +288,7 @@ public class Index1 {
 		}
 		if(documents.isEmpty()){
 			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the prefix: \"" + suffix + "\"");
+			System.out.println("You are searching for words with the sufffix: \"" + suffix + "\"");
 			System.out.println("Not found.");
 			return false;
 		}
@@ -272,8 +298,8 @@ public class Index1 {
 			documents.clear();
 			documents.addAll(all);
 			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the prefix: \"" + suffix + "\"");
-			System.out.println("Search prefix \"" + suffix + "\" found in: \n" + documents);
+			System.out.println("You are searching for words with the suffix: \"" + suffix + "\"");
+			System.out.println("Search suffix \"" + suffix + "\" found in: \n" + documents);
 			return true;
 		}
 	}
