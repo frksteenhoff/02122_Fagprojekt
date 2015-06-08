@@ -105,7 +105,7 @@ public class Index1 {
 				}
 				//System.out.println(word);
 
-				if(!word.equals("---END.OF.DOCUMENT---") && (!ContainsAddString(wikiM.get(Math.abs(word.hashCode())), word, currentTitle))){
+				if(!word.equals("---END.OF.DOCUMENT---") && !ContainsAddString(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
 					tmp = new WikiItem(word, currentTitle, null);
 					current.next = tmp;
 					current = tmp;
