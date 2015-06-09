@@ -136,30 +136,41 @@ public class Index1 {
 		}
 		// Counter for time spent on indexing 
 		long endTime = System.nanoTime();
-		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec.");
+		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
 	}
 
 	//Overall search logic
 	public boolean searchLogic(String searchString){
 
+		String searchWord = searchString;
 		String[] parts = searchString.split(" ");
+
+		System.out.println("------------------------------------");
+		System.out.println("You are searching for: \"" + searchWord + "\"");
 
 		//Limiting searches to either 1 search word or two separated by a logical operator
 		if(parts.length == 1 && (!parts[0].startsWith("*") && !parts[0].endsWith("*"))){
 			return search(parts[0]);
 
 		}else if(parts.length == 1 && parts[0].endsWith("*")){
-			prefixSearch(parts);
+			return prefixSearch(parts);
 
 		}else if(parts.length == 1 && parts[0].startsWith("*")){
-			suffixSearch(parts);
+			return suffixSearch(parts);
 
 		}else if(parts.length > 3 && parts.length % 2 == 1){		
+			String [] recResult = recursiveBool(parts);
 			
-			recursiveBool(parts);
+			System.out.println("Search words found in: \n" + Arrays.toString(recResult));
+			return true;
 
 		}else if(parts.length == 3){		
-			boolSearch(parts[0], parts[1], Arrays.copyOfRange(parts, 2, parts.length));
+			String [] titles = new String[arraySearch(parts[2]).size()];
+			titles = arraySearch(parts[2]).toArray(titles);
+			ArrayList<String> boolResult = boolSearch(parts[0], parts[1], titles);
+			
+			System.out.println("Search words found in: \n" + boolResult);
+			return true;
 
 		}else if(parts.length < 3){
 			System.out.println("No full-text search allowed. \n Use OR, AND or NOT as separator in multiple word search.");
@@ -174,35 +185,38 @@ public class Index1 {
 		ArrayList<WikiItem> hash = wikiM.get(Math.abs(searchstr.hashCode()));
 		for(int i = 0; i < hash.size(); i++){
 			if(hash.get(i).str.equals(searchstr)){
-				System.out.println("------------------------------------");
-				System.out.println("You are searching for: " + searchstr);
 				System.out.println("Search string \"" + searchstr + "\" found in: \n"
 						+ hash.get(i).title);
 				return true;
 			}
 		}
-		System.out.println("------------------------------------");
-		System.out.println("You are searching for: " + searchstr);
 		System.out.println("Not found.");
 		return false;
 	}
 
 	private String[] recursiveBool(String[] parts){
-		
-//		String [] found =  new String[];
 
 		if(parts.length > 3){
 			// Split search
 			String[] first = {parts[0],parts[1]}; 
 			String[] rest = Arrays.copyOfRange(parts, 2, parts.length);
-			boolSearch(first[0], first[1], recursiveBool(rest));
-		}
+			ArrayList<String> splitArray = boolSearch(first[0], first[1], recursiveBool(rest));
+			
+			String[] split = new String[splitArray.size()];
+			split = splitArray.toArray(split);
+			return split;
 
-		else if(parts.length == 3){
+		}else if(parts.length == 3){
 			// Boolean search on search words
-			boolSearch(parts[0], parts[1], arraySearch(parts[2]).toArray(new String[arraySearch(parts[2]).size()]));
+			ArrayList<String> boolArray = boolSearch(parts[0], parts[1], arraySearch(parts[2]).toArray(new String[arraySearch(parts[2]).size()]));
+			String[] recursive = new String[boolArray.size()];
+			recursive = boolArray.toArray(recursive);
+			return recursive;
+			
+		}else{
+			String[] nullList = new String[0];
+			return nullList;
 		}
-		return null;
 	}
 
 	private ArrayList<String> boolSearch(String word, String key, String[] parts) {
@@ -225,9 +239,9 @@ public class Index1 {
 		ArrayList<String> union = new ArrayList<String>();
 		ArrayList<String> part2 = new ArrayList<String>();
 		ArrayList<String> part1 = arraySearch(word);
-		
-		if(!(parts == null)){
-			part2 = arraySearch(parts[0]); 
+
+		if(parts != null){
+			Collections.addAll(part2, parts);
 		}
 		if(!part1.isEmpty() && !part2.isEmpty()){
 
@@ -236,7 +250,6 @@ public class Index1 {
 					union.add(part);
 				}
 			}
-			return union;
 		}
 		return union;
 	}
@@ -262,7 +275,7 @@ public class Index1 {
 		if(!(parts == null)){
 			part2 = arraySearch(parts[0]); 
 		}
-		
+
 		for(String part : part1){
 			if(!part2.contains(part)){
 				exclude.add(part);
@@ -283,8 +296,6 @@ public class Index1 {
 			current = current.next;
 		}
 		if(documents.isEmpty()){
-			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the sufffix: \"" + suffix + "\"");
 			System.out.println("Not found.");
 			return false;
 		}
@@ -293,8 +304,6 @@ public class Index1 {
 			all.addAll(documents);
 			documents.clear();
 			documents.addAll(all);
-			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the suffix: \"" + suffix + "\"");
 			System.out.println("Search suffix \"" + suffix + "\" found in: \n" + documents);
 			return true;
 		}
@@ -313,8 +322,7 @@ public class Index1 {
 		}
 		if(documents.isEmpty()){
 			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the prefix: \"" + prefix + "\"");
-			System.out.println("Not found.");
+			System.out.println("Words with the prefix: \"" + prefix + "\" not found.");
 			return false;
 		}
 		else{
@@ -322,8 +330,6 @@ public class Index1 {
 			all.addAll(documents);
 			documents.clear();
 			documents.addAll(all);
-			System.out.println("------------------------------------");
-			System.out.println("You are searching for words with the prefix: \"" + prefix + "\"");
 			System.out.println("Search prefix \"" + prefix + "\" found in: \n" + documents);
 			return true;
 		}
