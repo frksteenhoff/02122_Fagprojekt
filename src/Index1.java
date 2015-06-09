@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -13,6 +15,7 @@ public class Index1 {
 	WikiItem start, tmp;
 	wikiMap wikiM = new wikiMap();
 	int x = 0;
+	boolean check = true;
 
 	public static void main(String[] args) {
 		System.out.println("Preprocessing " + args[0]);
@@ -151,10 +154,14 @@ public class Index1 {
 		}else if(parts.length == 1 && parts[0].startsWith("*")){
 			suffixSearch(parts);
 
-		}else if(parts.length == 3){			
-			boolSearch(parts);
+		}else if(parts.length > 3 && parts.length % 2 == 1){		
+			
+			recursiveBool(parts);
 
-		}else if(parts.length < 3 || parts.length > 3){
+		}else if(parts.length == 3){		
+			boolSearch(parts[0], parts[1], Arrays.copyOfRange(parts, 2, parts.length));
+
+		}else if(parts.length < 3){
 			System.out.println("No full-text search allowed. \n Use OR, AND or NOT as separator in multiple word search.");
 
 		}else{
@@ -180,99 +187,88 @@ public class Index1 {
 		return false;
 	}
 
-	/*private ArrayList<String> splitSearch(String[] parts){
-	
+	private String[] recursiveBool(String[] parts){
+		
+		String [] found =  new String[];
+
 		if(parts.length > 3){
-			String [] start = {parts[0], parts[1], parts[2]};
-			String [] rest = new String[20];
-			
-		for(int j = 3; j < parts.length; j++){
-			rest[j-3] = parts[j];
-			}
-		splitSearch(rest);
-		
-		}else if(parts.length < 3){
-			ArrayList<String> first = boolSearch(start);
-			first.add(parts[0]);
-			first.add(parts[1]);
-			
+			// Split search
+			String[] first = {parts[0],parts[1]}; 
+			String[] rest = Arrays.copyOfRange(parts, 2, parts.length);
+			boolSearch(first[0], first[1], recursiveBool(rest));
 		}
-		
-		for(int i = 1 ; i < parts.length ; i++){
-			if(i % 2 == 1 && (parts[i] == "and" || parts[i] == "or" || parts[i] == "not")){
-				
-			}
-		}
-		return null;
-	}*/
-	
-	private ArrayList<String> boolSearch(String[] parts) {
 
-		if(parts[1].equals("and")){
-			booleanAND(parts);
-
-		}else if(parts[1].equals("or")){
-			booleanOR(parts);
-
-		}else if(parts[1].equals("not")){
-			booleanNOT(parts);
+		else if(parts.length == 3){
+			// Boolean search on search words
+			boolSearch(parts[0], parts[1], arraySearch(parts[2]).toArray(new String[arraySearch(parts[2]).size()]));
 		}
 		return null;
 	}
 
-	private boolean booleanAND(String[] parts) {
-		ArrayList<String> part1 = arraySearch(parts[0]);
-		ArrayList<String> part2 = arraySearch(parts[2]);
+	private ArrayList<String> boolSearch(String word, String key, String[] parts) {
 
+		ArrayList<String> found = new ArrayList<>();
+
+		if(key.equals("and")){
+			found = booleanAND(word, parts);
+
+		}else if(key.equals("or")){
+			found =  booleanOR(word, parts);
+
+		}else if(key.equals("not")){
+			found =  booleanNOT(word, parts);
+		}
+		return found;
+	}
+
+	private ArrayList<String> booleanAND(String word, String[] parts) {
+		ArrayList<String> union = new ArrayList<String>();
+		ArrayList<String> part2 = new ArrayList<String>();
+		ArrayList<String> part1 = arraySearch(word);
+		
+		if(!(parts == null)){
+			part2 = arraySearch(parts[0]); 
+		}
 		if(!part1.isEmpty() && !part2.isEmpty()){
-			ArrayList<String> union = new ArrayList<String>();
 
 			for(String part : part1){
 				if(part2.contains(part)){
 					union.add(part);
 				}
 			}
-			System.out.println("------------------------------------");
-			System.out.println("You are searching for: " + parts[0] + " and " + parts[2]);
-			System.out.println("Search strings are both found in: \n" + union);
-			return true;
-
-		}else if(!part1.isEmpty() || !part2.isEmpty()){
-			System.out.println("The search words weren't found in the same document.");
-			return false;
+			return union;
 		}
-		return false;
+		return union;
 	}
 
-	private boolean booleanOR(String[] parts) {
-		ArrayList<String> part1 = arraySearch(parts[0]);
-		ArrayList<String> part2 = arraySearch(parts[2]);
+	private ArrayList<String> booleanOR(String word, String[] parts) {
+		ArrayList<String> part1 = arraySearch(word);
+		ArrayList<String> part2 = new ArrayList<String>(); 
 
 		for(String part : part2){
 			if(!part1.contains(part)){
 				part1.add(part);
 			}
 		}
-		System.out.println("------------------------------------");
-		System.out.println("You are searching for: " + parts[0] + " or " + parts[2]);
-		System.out.println("Search strings are found in: \n" + part1);
-		return true;
+		return part1;
 	}
 
-	private boolean booleanNOT(String[] parts) {
-		ArrayList<String> part1 = arraySearch(parts[0]);
-		ArrayList<String> part2 = arraySearch(parts[2]);
+	private ArrayList<String> booleanNOT(String word, String[] parts) {
+
+		ArrayList<String> part1 = arraySearch(word);
+		ArrayList<String> part2 = new ArrayList<String>(); 
 		ArrayList<String> exclude = new ArrayList<String>();
 
+		if(!(parts == null)){
+			part2 = arraySearch(parts[0]); 
+		}
+		
 		for(String part : part1){
 			if(!part2.contains(part)){
 				exclude.add(part);
 			}
 		}
-		System.out.println("------------------------------------");
-		System.out.println("You are searching for: " + parts[0] + " not " + parts[2]);
-		System.out.println("Search strings are found in: \n" + exclude);
-		return true;
+		return exclude;
 	}
 
 	// Finding all the words ending on the specified suffix. (can be made with regular expressions!)
