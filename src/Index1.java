@@ -189,7 +189,7 @@ public class Index1 {
 
 	private String[] recursiveBool(String[] parts){
 		
-		String [] found =  new String[];
+//		String [] found =  new String[];
 
 		if(parts.length > 3){
 			// Split search
