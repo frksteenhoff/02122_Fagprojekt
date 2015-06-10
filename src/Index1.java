@@ -14,8 +14,7 @@ public class Index1 {
 
 	WikiItem start, tmp;
 	wikiMap wikiM = new wikiMap();
-	int x = 0;
-	boolean check = true;
+	boolean docTitle = true;
 
 	public static void main(String[] args) {
 		System.out.println("Preprocessing " + args[0]);
@@ -96,33 +95,34 @@ public class Index1 {
 			BufferedReader bufferR = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
 			Scanner input = new Scanner(bufferR);
 			word = input.next().toLowerCase();
-			if(x == 0 && !word.equals(null)){
+			if(docTitle && !word.equals(null)){
 				currentTitle = word;
-				x = 1;
+				docTitle = false;
 			}
 
 			start = new WikiItem(word, currentTitle, null);
 			current = start;
 			while (input.hasNext()) {   // Read all words in input
 
-				/* x oscillates between 0 and 1 indicating whether the word  
+				/* docTitle oscillates between true and false indicating whether the word  
 				  is a title or a word within the document of that title*/
-				if(x == 0){
+				if(docTitle){
 					word = input.nextLine();
 					if(!word.isEmpty()){
 						//Removes everything but alphanumeric characters
 						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
-						x = 1;
+						docTitle = false;
 					}
-				}else if(x == 1){
+				
+				}else if(!docTitle){
 					word = input.next();
 					if(word.equals("---END.OF.DOCUMENT---")){
-						x = 0;
+						docTitle = true;
 					}
 					//Removes everything but alphanumeric characters
 					word = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				}
-
+				
 				if(!word.equals("---END.OF.DOCUMENT---") && !stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
 					tmp = new WikiItem(word, currentTitle, null);
 					current.next = tmp;
@@ -159,26 +159,26 @@ public class Index1 {
 			return suffixSearch(parts);
 
 		}else if(parts.length > 3 && parts.length % 2 == 1){		
-			String [] recResult = recursiveBool(parts);
-			
-			System.out.println("Search words found in: \n" + Arrays.toString(recResult));
+			recursiveBool(parts);
 			return true;
 
-		}else if(parts.length == 3){		
+		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){		
 			String [] titles = new String[arraySearch(parts[2]).size()];
 			titles = arraySearch(parts[2]).toArray(titles);
 			ArrayList<String> boolResult = boolSearch(parts[0], parts[1], titles);
-			
+
 			System.out.println("Search words found in: \n" + boolResult);
 			return true;
 
 		}else if(parts.length < 3){
-			System.out.println("No full-text search allowed. \n Use OR, AND or NOT as separator in multiple word search.");
+			System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
+			return true;
 
 		}else{
+			System.out.println(parts[1]);
 			System.out.println("Use or, and or not as separator in multiple word search.");
-		}	
-		return false;
+			return true;
+		}
 	}
 
 	public boolean search(String searchstr) {
@@ -197,14 +197,22 @@ public class Index1 {
 	private String[] recursiveBool(String[] parts){
 
 		if(parts.length > 3){
-			// Split search
-			String[] first = {parts[0],parts[1]}; 
-			String[] rest = Arrays.copyOfRange(parts, 2, parts.length);
-			ArrayList<String> splitArray = boolSearch(first[0], first[1], recursiveBool(rest));
-			
-			String[] split = new String[splitArray.size()];
-			split = splitArray.toArray(split);
-			return split;
+			for(int i = (parts.length-2) ; i > 1 ; i--){
+				if(parts[i].equals("and") || parts[i].equals("or") || parts[i].equals("not")){
+					// Split search
+					String[] first = {parts[0],parts[1]}; 
+					String[] rest = Arrays.copyOfRange(parts, 2, parts.length);
+					ArrayList<String> splitArray = boolSearch(first[0], first[1], recursiveBool(rest));
+
+					String[] split = new String[splitArray.size()];
+					split = splitArray.toArray(split);
+					System.out.println("Search words found in: \n" + Arrays.toString(split));
+					return split;
+				}
+				System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
+				String[] nullList = new String[0];
+				return nullList;
+			}
 
 		}else if(parts.length == 3){
 			// Boolean search on search words
@@ -212,11 +220,9 @@ public class Index1 {
 			String[] recursive = new String[boolArray.size()];
 			recursive = boolArray.toArray(recursive);
 			return recursive;
-			
-		}else{
-			String[] nullList = new String[0];
-			return nullList;
 		}
+		String[] nullList = new String[0];
+		return nullList;
 	}
 
 	private ArrayList<String> boolSearch(String word, String key, String[] parts) {
@@ -236,9 +242,10 @@ public class Index1 {
 	}
 
 	private ArrayList<String> booleanAND(String word, String[] parts) {
+
 		ArrayList<String> union = new ArrayList<String>();
-		ArrayList<String> part2 = new ArrayList<String>();
 		ArrayList<String> part1 = arraySearch(word);
+		ArrayList<String> part2 = new ArrayList<String>();
 
 		if(parts != null){
 			Collections.addAll(part2, parts);
@@ -272,8 +279,8 @@ public class Index1 {
 		ArrayList<String> part2 = new ArrayList<String>(); 
 		ArrayList<String> exclude = new ArrayList<String>();
 
-		if(!(parts == null)){
-			part2 = arraySearch(parts[0]); 
+		if(parts != null){
+			Collections.addAll(part2, parts);
 		}
 
 		for(String part : part1){
