@@ -113,7 +113,7 @@ public class Index1 {
 						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						docTitle = false;
 					}
-				
+
 				}else if(!docTitle){
 					word = input.next();
 					if(word.equals("---END.OF.DOCUMENT---")){
@@ -122,7 +122,7 @@ public class Index1 {
 					//Removes everything but alphanumeric characters
 					word = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				}
-				
+
 				if(!word.equals("---END.OF.DOCUMENT---") && !stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
 					tmp = new WikiItem(word, currentTitle, null);
 					current.next = tmp;
@@ -175,7 +175,7 @@ public class Index1 {
 			return true;
 
 		}else{
-			System.out.println(parts[1]);
+			//System.out.println(parts[1]);
 			System.out.println("Use or, and or not as separator in multiple word search.");
 			return true;
 		}
@@ -264,6 +264,7 @@ public class Index1 {
 	private ArrayList<String> booleanOR(String word, String[] parts) {
 		ArrayList<String> part1 = arraySearch(word);
 		ArrayList<String> part2 = new ArrayList<String>(); 
+		Collections.addAll(part2, parts);
 
 		for(String part : part2){
 			if(!part1.contains(part)){
