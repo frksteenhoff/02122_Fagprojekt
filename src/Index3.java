@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class Index3 {	 
 
 	WikiItem start;
-	titleList title;
+	titleList titles;
 	boolean docTitle = true;
 
 	private class WikiItem {
@@ -39,7 +39,6 @@ public class Index3 {
 	public Index3(String filename) {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
-		title = new titleList(currentTitle, null);
 		titleList cur, temp;
 		WikiItem current, tmp;
 		try {
@@ -50,18 +49,20 @@ public class Index3 {
 				docTitle = false;
 			}
 
-			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), title, null);
+			titles = new titleList(currentTitle, null);
+			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), titles, null);
 			current = start;
-			cur = title;
+			cur = titles;
+			//System.out.println(word);
 			while(input.hasNext()) {   // Read all words in input
 
 				/* docTitle oscillates between true and false indicating whether the word  
 				  is a title or a word within the document of that title*/
 				if(docTitle){
 					word = input.nextLine();
+					//System.out.println(word);
 					if(!word.isEmpty()){
-						//Removes everything but alphanumeric characters
-						currentTitle = word;
+						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						docTitle = false;
 					}
 
@@ -70,15 +71,25 @@ public class Index3 {
 					if(word.equals("---END.OF.DOCUMENT---")){
 						docTitle = true;
 					}
-					temp = new titleList(currentTitle, null);
-					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), temp, null);
-					current.next = tmp;
-					current.next.title.next = temp;
-					cur = temp;
-					current = tmp;
+
+					while(!word.equals("---END.OF.DOCUMENT---") && !word.replaceAll("[^a-z0-9 ]", "").equals(current.str)){
+						System.out.println(cur.docTitle);
+						tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
+						current.next = tmp;
+						current = tmp;
+						word = input.next();
+						
+						while(!current.title.docTitle.equals(current.title.next.docTitle)){
+
+							temp = new titleList(currentTitle, null);
+							cur.next = temp;
+							cur = temp;
+							word = input.next();
+						}
+					}
 				}
 			}
-			input.close();
+			input.close();	
 		} catch (FileNotFoundException e) {
 			System.out.println("Error reading file " + filename);
 		}
@@ -90,13 +101,21 @@ public class Index3 {
 	public ArrayList<String> search(String searchstr) {
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
-		while (current != null) {
-			if (current.str.equals(searchstr)) {
-				while(current.title.docTitle != null && !documents.contains(current.title.docTitle)){
+		while(current != null) {
+			if(current.str.equals(searchstr)) {
+				documents.add(current.title.docTitle);
+				current = current.next;
+				while(current.title.next != null){
 					documents.add(current.title.docTitle);
+					current.title = current.title.next;
 				}
+				if(!documents.isEmpty()){
+					break;
+
+				}
+				current = current.next;
+
 			}
-			current = current.next;
 		}
 		return documents;
 	}

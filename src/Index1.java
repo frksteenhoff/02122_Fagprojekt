@@ -59,7 +59,7 @@ public class Index1 {
 			Scanner input = new Scanner(bufferR);
 			word = input.next();
 			if(docTitle && !word.equals(null)){
-				currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
+				currentTitle = word.replaceAll("[^A-Za-z0-9 ]", "");
 				docTitle = false;
 			}
 			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
@@ -82,7 +82,6 @@ public class Index1 {
 						docTitle = true;
 					}
 				}
-
 				if(!word.equals("---END.OF.DOCUMENT---") && 
 						!stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
 					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
@@ -261,6 +260,7 @@ public class Index1 {
 			if(current.str.endsWith(suffix)) {
 				documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 			}
+			current = current.next;
 		}
 		if(documents.isEmpty()){
 			System.out.println("Not found.");
@@ -281,13 +281,13 @@ public class Index1 {
 		String prefix = parts[0].substring(0,parts[0].length()-1);
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
-		for( int i = 0; i < wikiM.mapList.size(); i++){
+		for(int i = 0; i < wikiM.mapList.size(); i++){
 			if(current.str.startsWith(prefix)) {
 				documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 			}
+			current = current.next;
 		}
 		if(documents.isEmpty()){
-			System.out.println("------------------------------------");
 			System.out.println("Words with the prefix: \"" + prefix + "\" not found.");
 			return false;
 		}
