@@ -1,23 +1,29 @@
-@echo ---  02122 SCRIPT  ---
+@echo -----  02122 SCRIPT  -----
 
-@echo     Search  engine
+@echo  Search engine Java files
 
-@echo ----------------------
+@echo --------------------------
 
 @echo off
 
 echo $SHELL
 javac C:\Users\bruger\workspace\02122_Fagprojekt\02122_Fagprojekt\src\GUI.java
 
-@echo Compiled GUI      (1/4)
+@echo Compiled GUI      (1/7)
 javac C:\Users\bruger\workspace\02122_Fagprojekt\02122_Fagprojekt\src\wikiMap.java
 
-@echo Compiled wikiMap  (2/4)
+@echo Compiled wikiMap  (2/7)
 javac C:\Users\bruger\workspace\02122_Fagprojekt\02122_Fagprojekt\src\wikiItem.java
 
-@echo Compiled WikiItem (3/4)
+@echo Compiled WikiItem (3/7)
 javac C:\Users\bruger\workspace\02122_Fagprojekt\02122_Fagprojekt\src\Index1.java
 
-@echo Compiled Index1   (4/4)
+@echo Compiled Index1   (4/7)
+javac C:\Users\bruger\workspace\02122_Fagprojekt\02122_Fagprojekt\src\Index2.java
+
+@echo Compiled Index2   (5/6)
+javac C:\Users\bruger\workspace\02122_Fagprojekt\02122_Fagprojekt\src\Index4.java
+
+@echo Compiled Index4   (6/6)
 @echo All files compiled successfully!
 pause

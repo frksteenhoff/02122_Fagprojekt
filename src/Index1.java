@@ -118,6 +118,12 @@ public class Index1 {
 		}else if(parts.length == 1 && parts[0].startsWith("*")){
 			return suffixSearch(parts);
 
+		//If the search is not full-text or with correct boolean operators -> error message.
+		}else if(!parts[1].equals("and") || !parts[1].equals("or") || !parts[1].equals("not") || parts.length < 3 
+				|| !parts[parts.length-2].equals("and") || !parts[parts.length-2].equals("or") || !parts[parts.length-2].equals("not")){
+			System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
+			return true;
+
 		}else if(parts.length > 3 && parts.length % 2 == 1){		
 			recursiveBool(parts);
 			return true;
@@ -130,12 +136,7 @@ public class Index1 {
 			System.out.println("Search words found in: \n" + boolResult);
 			return true;
 
-		}else if(parts.length < 3){
-			System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
-			return true;
-
 		}else{
-			//System.out.println(parts[1]);
 			System.out.println("Use or, and or not as separator in multiple word search.");
 			return true;
 		}
