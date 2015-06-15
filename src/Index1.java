@@ -64,7 +64,7 @@ public class Index1 {
 			}
 			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
 			current = start;
-			
+
 			while (input.hasNext()) {   // Read all words in input
 
 				/* docTitle oscillates between true and false indicating whether the word  
@@ -72,7 +72,7 @@ public class Index1 {
 				if(docTitle){
 					word = input.nextLine();
 					if(!word.isEmpty()){
-						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
+						currentTitle = word.replaceAll("[^A-Za-z0-9 ]", "");
 						docTitle = false;
 					}
 
@@ -83,7 +83,8 @@ public class Index1 {
 					}
 				}
 
-				if(!word.equals("---END.OF.DOCUMENT---") && !stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
+				if(!word.equals("---END.OF.DOCUMENT---") && 
+						!stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
 					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
 					current.next = tmp;
 					current = tmp;

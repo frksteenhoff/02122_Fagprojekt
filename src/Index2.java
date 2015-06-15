@@ -34,7 +34,7 @@ public class Index2 {
 			Scanner input = new Scanner(new File(filename), "UTF-8");
 			word = input.next();
 			if(docTitle && !word.equals(null)){
-				currentTitle = word;
+				currentTitle = word.replaceAll("[^A-Za-z0-9 ]", "");
 				docTitle = false;
 			}
 
@@ -58,7 +58,6 @@ public class Index2 {
 						docTitle = true;
 					}
 					//Removes everything but alphanumeric characters
-					//word = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
 					current.next = tmp;
 					current = tmp;

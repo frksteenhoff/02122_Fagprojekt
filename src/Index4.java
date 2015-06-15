@@ -5,54 +5,61 @@ import java.util.Scanner;
 /*
  * Author(s): Anders Sperling, Henriette Steenhoff
  * Software technology, 4th semester F15, DTU
- * NO MODIFICATIONS MADE YET!!
+ * Using hash table in stead of linked list to search through.
  */
 
 public class Index4 {	 
 
-	WikiItem start;
-	titleList title;
+	WikiItem start, tmp;
+	wikiMap wikiM = new wikiMap();
 	boolean docTitle = true;
 
 	private class WikiItem {
 		String str;
 		WikiItem next;
-		titleList title;
+		ArrayList<String> title = new ArrayList<String>();
+		int WikiNR;
 
-		WikiItem(String s, titleList t, WikiItem n) {
+		WikiItem(String s, String t, WikiItem n) {
 			str = s;
-			title = t;
+			title.add(t);
 			next = n;
+			WikiNR = Math.abs(str.hashCode());
 		}
 	}
 
-	private class titleList {
-		String docTitle;
-		titleList next;
+	public class wikiMap {
+	    
+	    ArrayList<ArrayList<WikiItem>> mapList = new ArrayList<ArrayList<WikiItem>>();
 
-		titleList(String d, titleList n){
-			docTitle = d;
-			next = n;
-		}
+	    public wikiMap(){
+	            for(int i = 0; i < 8000; i++){
+	                ArrayList<WikiItem> list = new ArrayList<WikiItem>();
+	                mapList.add(list);
+	            }
+	        }
+	        public void add(WikiItem w){
+	            mapList.get(w.WikiNR % mapList.size()).add(w);
+	        }
+	        public ArrayList<WikiItem> get(int i){
+	            return mapList.get(i % mapList.size());
+	        }
 	}
-
+	
 	public Index4(String filename) {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
-		title = new titleList(currentTitle, null);
-		titleList cur, temp;
 		WikiItem current, tmp;
 		try {
 			Scanner input = new Scanner(new File(filename), "UTF-8");
 			word = input.next();
 			if(docTitle && !word.equals(null)){
-				currentTitle = word;
+				currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				docTitle = false;
 			}
 
-			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), title, null);
+			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
 			current = start;
-			cur = title;
 			while(input.hasNext()) {   // Read all words in input
 
 				/* docTitle oscillates between true and false indicating whether the word  
@@ -61,7 +68,7 @@ public class Index4 {
 					word = input.nextLine();
 
 					if(!word.isEmpty()){
-						currentTitle = word;
+						currentTitle = word.replaceAll("[^A-Za-z0-9 ]", "");
 						docTitle = false;
 					}
 
@@ -70,12 +77,14 @@ public class Index4 {
 					if(word.equals("---END.OF.DOCUMENT---")){
 						docTitle = true;
 					}
-					temp = new titleList(currentTitle, null);
-					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), temp, null);
+		
+					if(!word.equals("---END.OF.DOCUMENT---") && 
+							!stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
+					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
 					current.next = tmp;
-					current.next.title.next = temp;
-					cur = temp;
 					current = tmp;
+					wikiM.add(current);
+				}
 				}
 			}
 			input.close();
@@ -86,19 +95,34 @@ public class Index4 {
 		long endTime = System.nanoTime();
 		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
 	}
+	// Method checking whether string to be added already exists or not
+	boolean stringTitleDuplicate(ArrayList<WikiItem> list, String string, String currentTitle){
 
-	public ArrayList<String> search(String searchstr) {
-		ArrayList<String> documents = new ArrayList<>();
-		WikiItem current = start;
-		while (current != null) {
-			if (current.str.equals(searchstr)) {
-				while(current.title.docTitle != null && !documents.contains(current.title.docTitle)){
-					documents.add(current.title.docTitle);
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i).str.equals(string)){
+				if(!list.get(i).title.contains(currentTitle)){
+					list.get(i).title.add(currentTitle);
+					return true;
 				}
+				return true;
 			}
-			current = current.next;
 		}
-		return documents;
+		return false;
+	}
+
+	public boolean search(String searchstr) {
+		ArrayList<WikiItem> hash = wikiM.get(Math.abs(searchstr.hashCode()));
+		for(int i = 0; i < hash.size(); i++){
+			if(hash.get(i).str.equals(searchstr)){
+				System.out.println("-----------------------------------------");
+				System.out.println("You are searching for: " + searchstr);
+				System.out.println("Search string \"" + searchstr + "\" found in: \n"
+						+ hash.get(i).title);
+				return true;
+			}
+		}
+		System.out.println("Not found.");
+		return false;
 	}
 
 	public static void main(String[] args) {
@@ -111,13 +135,7 @@ public class Index4 {
 			if (searchstr.equals("exit")) {
 				break;
 			}
-			if (!i.search(searchstr).isEmpty()) {
-				ArrayList<String> titles = i.search(searchstr);
-				System.out.println("-----------------------------------------");
-				System.out.println("You are searching for: " + searchstr);
-				System.out.println("Search word exists in following documents:\n" + titles);
-			} else {
-				System.out.println(searchstr + " does not exist");
+			else if (i.search(searchstr)) {
 			}
 		}
 		console.close();

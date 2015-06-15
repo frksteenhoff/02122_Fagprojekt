@@ -46,7 +46,7 @@ public class Index3 {
 			Scanner input = new Scanner(new File(filename), "UTF-8");
 			word = input.next();
 			if(docTitle && !word.equals(null)){
-				currentTitle = word;
+				currentTitle = word.replaceAll("[^A-Za-z0-9 ]", "");
 				docTitle = false;
 			}
 
