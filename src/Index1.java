@@ -34,48 +34,6 @@ public class Index1 {
 		}
 	}
 
-	public ArrayList<String> sectionPreprocessing(String str){
-		String section, line = null;
-		ArrayList<String> sections = new ArrayList<String>();
-		try {
-			Scanner input = new Scanner(new File(str), "UTF-8");
-			section = input.nextLine();
-			while(input.hasNext()){
-				line = input.nextLine();
-				if(line.contains("---END.OF.DOCUMENT---")){
-					section += line;
-					sections.add(section);
-					section = null;
-				}
-				section += line;
-			}
-			input.close();
-			return sections;
-
-		} catch (FileNotFoundException e) {
-			System.out.println("Error reading file " + str);
-		}
-		return null;
-	}
-
-	public void sectionIndexing(String str){
-		Scanner input = new Scanner(str);
-		String title = input.next();
-		String word = title;
-		start = new WikiItem(word, title, null);
-
-		while (input.hasNext()) {   // Read all words in section
-			word = input.next();
-
-			// Create new WikiItem, if it does not already exist
-			if(!stringTitleDuplicate(wikiM.get(start.WikiNR), word, title)){
-				tmp = new WikiItem(word, title, null);
-				start = tmp;
-				wikiM.add(start);
-			}
-		}
-	}
-
 	// Method checking whether string to be added already exists or not
 	boolean stringTitleDuplicate(ArrayList<WikiItem> list, String string, String currentTitle){
 
@@ -99,14 +57,14 @@ public class Index1 {
 		try {
 			BufferedReader bufferR = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
 			Scanner input = new Scanner(bufferR);
-			word = input.next().toLowerCase();
+			word = input.next();
 			if(docTitle && !word.equals(null)){
-				currentTitle = word;
+				currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				docTitle = false;
 			}
-
-			start = new WikiItem(word, currentTitle, null);
+			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
 			current = start;
+			
 			while (input.hasNext()) {   // Read all words in input
 
 				/* docTitle oscillates between true and false indicating whether the word  
@@ -114,7 +72,6 @@ public class Index1 {
 				if(docTitle){
 					word = input.nextLine();
 					if(!word.isEmpty()){
-						//Removes everything but alphanumeric characters
 						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						docTitle = false;
 					}
@@ -124,12 +81,11 @@ public class Index1 {
 					if(word.equals("---END.OF.DOCUMENT---")){
 						docTitle = true;
 					}
-					//Removes everything but alphanumeric characters
-					word = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				}
 
 				if(!word.equals("---END.OF.DOCUMENT---") && !stringTitleDuplicate(wikiM.get(Math.abs(word.hashCode())), word, currentTitle)){
-					tmp = new WikiItem(word, currentTitle, null);
+					tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), currentTitle, null);
+					current.next = tmp;
 					current = tmp;
 					wikiM.add(current);
 				}
@@ -301,7 +257,7 @@ public class Index1 {
 		String suffix = parts[0].substring(1);
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
-		for( int i = 0; i < wikiM.mapList.size(); i++){
+		while(current != null){
 			if(current.str.endsWith(suffix)) {
 				documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 			}
@@ -348,7 +304,7 @@ public class Index1 {
 	public ArrayList<String> arraySearch(String searchstr) {
 		WikiItem current = start;
 		while(current != null) {
-			if(current.str.equals(searchstr.toLowerCase())) {
+			if(current.str.equals(searchstr)) {
 				return (wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title;
 			}
 			current = current.next;

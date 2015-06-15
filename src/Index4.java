@@ -5,7 +5,7 @@ import java.util.Scanner;
 /*
  * Author(s): Anders Sperling, Henriette Steenhoff
  * Software technology, 4th semester F15, DTU
- * Modification of the Java-file Index2. The program now uses linked lists to reference between data.  
+ * NO MODIFICATIONS MADE YET!!
  */
 
 public class Index4 {	 
