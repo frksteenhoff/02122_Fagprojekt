@@ -8,7 +8,7 @@ import java.util.Scanner;
  * Modification of the Java-file Index2. The program now uses linked lists to reference between data.  
  */
 
-public class Index3 {	 
+public class Index4 {	 
 
 	WikiItem start;
 	titleList title;
@@ -36,7 +36,7 @@ public class Index3 {
 		}
 	}
 
-	public Index3(String filename) {
+	public Index4(String filename) {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
 		title = new titleList(currentTitle, null);
@@ -59,8 +59,8 @@ public class Index3 {
 				  is a title or a word within the document of that title*/
 				if(docTitle){
 					word = input.nextLine();
+
 					if(!word.isEmpty()){
-						//Removes everything but alphanumeric characters
 						currentTitle = word;
 						docTitle = false;
 					}
@@ -103,7 +103,7 @@ public class Index3 {
 
 	public static void main(String[] args) {
 		System.out.println("Preprocessing " + args[0]);
-		Index3 i = new Index3(args[0]);
+		Index4 i = new Index4(args[0]);
 		Scanner console = new Scanner(System.in); 
 		for (;;) {
 			System.out.println("Input search string or type exit to stop");

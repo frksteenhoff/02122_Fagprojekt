@@ -306,44 +306,44 @@ public class Index1 {
 				documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 			}
 		}
-	if(documents.isEmpty()){
-		System.out.println("Not found.");
-		return false;
-	}
-	else{
-		Set<String> all = new HashSet<>();
-		all.addAll(documents);
-		documents.clear();
-		documents.addAll(all);
-		System.out.println("Search suffix \"" + suffix + "\" found in: \n" + documents);
-		return true;
-	}
-}
-
-//Finding all the words starting with the specified prefix. (can be made with regular expressions!)
-private boolean prefixSearch(String[] parts) {
-	String prefix = parts[0].substring(0,parts[0].length()-1);
-	ArrayList<String> documents = new ArrayList<>();
-	WikiItem current = start;
-	for( int i = 0; i < wikiM.mapList.size(); i++){
-		if(current.str.startsWith(prefix)) {
-			documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+		if(documents.isEmpty()){
+			System.out.println("Not found.");
+			return false;
+		}
+		else{
+			Set<String> all = new HashSet<>();
+			all.addAll(documents);
+			documents.clear();
+			documents.addAll(all);
+			System.out.println("Search suffix \"" + suffix + "\" found in: \n" + documents);
+			return true;
 		}
 	}
-	if(documents.isEmpty()){
-		System.out.println("------------------------------------");
-		System.out.println("Words with the prefix: \"" + prefix + "\" not found.");
-		return false;
+
+	//Finding all the words starting with the specified prefix. (can be made with regular expressions!)
+	private boolean prefixSearch(String[] parts) {
+		String prefix = parts[0].substring(0,parts[0].length()-1);
+		ArrayList<String> documents = new ArrayList<>();
+		WikiItem current = start;
+		for( int i = 0; i < wikiM.mapList.size(); i++){
+			if(current.str.startsWith(prefix)) {
+				documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
+			}
+		}
+		if(documents.isEmpty()){
+			System.out.println("------------------------------------");
+			System.out.println("Words with the prefix: \"" + prefix + "\" not found.");
+			return false;
+		}
+		else{
+			Set<String> all = new HashSet<>();
+			all.addAll(documents);
+			documents.clear();
+			documents.addAll(all);
+			System.out.println("Search prefix \"" + prefix + "\" found in: \n" + documents);
+			return true;
+		}
 	}
-	else{
-		Set<String> all = new HashSet<>();
-		all.addAll(documents);
-		documents.clear();
-		documents.addAll(all);
-		System.out.println("Search prefix \"" + prefix + "\" found in: \n" + documents);
-		return true;
-	}
-}
 
 	public ArrayList<String> arraySearch(String searchstr) {
 		WikiItem current = start;
