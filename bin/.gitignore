@@ -1,5 +1,3 @@
-/WestburyLab.wikicorp.201004_100MB.txt
-/WestburyLab.wikicorp.201004_1MB.txt
 /WestburyLab.wikicorp.201004_100KB.txt
 /GUI.class
 /Index1.class
@@ -7,3 +5,8 @@
 /IndexStart.class
 /WikiItem.class
 /wikiMap.class
+/Index2$WikiItem.class
+/Index2.class
+/Index3.class
+/Index3$WikiItem.class
+/Index3$titleList.class

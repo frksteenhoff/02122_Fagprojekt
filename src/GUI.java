@@ -17,6 +17,11 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+/*
+ * Author(s): Anders Sperling, Henriette Steenhoff
+ * Software technology, 4th semester F15, DTU  
+ */
+
 public class GUI extends JFrame implements MouseListener, KeyListener {
 	
 		public static JTextArea editText = new JTextArea("Search .."); //Event listener for Enter

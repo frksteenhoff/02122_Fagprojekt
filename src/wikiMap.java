@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/*
+ * Author(s): Anders Sperling, Henriette Steenhoff
+ * Software technology, 4th semester F15, DTU  
+ */
+
 public class wikiMap {
     
     ArrayList<ArrayList<WikiItem>> mapList = new ArrayList<ArrayList<WikiItem>>();
