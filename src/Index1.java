@@ -123,7 +123,7 @@ public class Index1 {
 			recursiveBool(parts);
 			return true;
 
-		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){		
+		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){	
 			String [] titles = new String[arraySearch(parts[2]).size()];
 			titles = arraySearch(parts[2]).toArray(titles);
 			ArrayList<String> boolResult = boolSearch(parts[0], parts[1], titles);
@@ -207,7 +207,6 @@ public class Index1 {
 		ArrayList<String> union = new ArrayList<String>();
 		ArrayList<String> part1 = arraySearch(word);
 		ArrayList<String> part2 = new ArrayList<String>();
-
 		if(parts != null){
 			Collections.addAll(part2, parts);
 		}
