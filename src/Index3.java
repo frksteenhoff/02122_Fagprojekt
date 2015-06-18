@@ -39,6 +39,7 @@ public class Index3 {
 	public Index3(String filename) {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
+		int test =0;
 		ArrayList<String> wordList = new ArrayList<>();
 		titleList cur;
 		WikiItem current, tmp, lookUp;
@@ -52,6 +53,7 @@ public class Index3 {
 
 			titles = new titleList(currentTitle, null);
 			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), titles, null);
+			System.out.println(word);
 			wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
 			current = start;
 			lookUp = start;
@@ -75,36 +77,31 @@ public class Index3 {
 					// Creating WikItem for word if it does not already exist. 
 					while(!word.equals("---END.OF.DOCUMENT---")){
 						if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+							lookUp = start;
 							while(lookUp != null){
 								if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
 									while(lookUp.title != null){
 										if(lookUp.title.next == null){
 											break;
 										}
-										lookUp.title = lookUp.title.next;
+										lookUp.title.next = cur;
+										lookUp = lookUp.next;
 									}
-									System.out.println("before: " + lookUp.str);
 									lookUp.title.next = new titleList(currentTitle, null);
 									lookUp.title = lookUp.title.next;
 									break;
 								}else{
-									lookUp = lookUp.next;
-									System.out.println("okay");
-									cur = new titleList(currentTitle, null);
-									tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
-									lookUp = tmp;
-									break;
-								}
+									lookUp = lookUp.next;								}
 							}
 						}else{
-							cur = new titleList(currentTitle, null);
 							tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
 							wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
-							System.out.println(wordList);
+							System.out.println(word);
 							if(lookUp != null){
-								System.out.println("adding");
 								lookUp.next = tmp;
 								lookUp = tmp;
+								test++;
+								System.out.println(test);
 							}
 						}
 						word = input.next();
@@ -129,13 +126,13 @@ public class Index3 {
 		WikiItem current = start;
 
 		while(current != null){
-			System.out.println("hej " + current.str);
+			System.out.println("wikiItem: " + current.str);
 			if(current.str.equals(searchstr)){
 				System.out.println("I'm in!");
 				while(current.title != null){
 					if(!documents.contains(current.title.docTitle)){
 						documents.add(current.title.docTitle);
-						System.out.println(current.str + " added");
+						System.out.println(current.str + " tilføjet");
 						if(current.title.next == null){
 							break;
 						}

@@ -283,7 +283,7 @@ public class Index5 {
 		String prefix = parts[0].substring(0,parts[0].length()-1);
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
-		for(int i = 0; i < wikiM.mapList.size(); i++){
+		while(current != null){
 			if(current.str.startsWith(prefix)) {
 				documents.addAll((wikiM.get(current.WikiNR)).get((wikiM.get(current.WikiNR)).indexOf(current)).title);
 			}
