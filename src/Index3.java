@@ -39,8 +39,9 @@ public class Index3 {
 	public Index3(String filename) {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
-		titleList cur, temp;
-		WikiItem current, tmp;
+		ArrayList<String> wordList = new ArrayList<>();
+		titleList cur, look;
+		WikiItem current, tmp, lookUp;
 		try {
 			Scanner input = new Scanner(new File(filename), "UTF-8");
 			word = input.next();
@@ -51,41 +52,58 @@ public class Index3 {
 
 			titles = new titleList(currentTitle, null);
 			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), titles, null);
+			wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
 			current = start;
+			lookUp = start;
 			cur = titles;
-			//System.out.println(word);
+			look = titles;
+
 			while(input.hasNext()) {   // Read all words in input
 
 				/* docTitle oscillates between true and false indicating whether the word  
 				  is a title or a word within the document of that title*/
 				if(docTitle){
 					word = input.nextLine();
-					//System.out.println(word);
+					//System.out.println(word); 
 					if(!word.isEmpty()){
 						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						docTitle = false;
 					}
+					cur = new titleList(currentTitle, null);
 
 				}else if(!docTitle){
 					word = input.next();
+
+					// Creating WikItem for word if it does not already exist. 
+					while(!word.equals("---END.OF.DOCUMENT---")){
+						if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+							while(lookUp != null){
+								if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+									while(lookUp.title != null){
+										if(lookUp.title.next == null){
+											break;
+										}
+										lookUp.title = lookUp.title.next;
+									}
+									lookUp.title.next = new titleList(currentTitle, null);
+									lookUp.title = lookUp.title.next;
+									break;
+								}else{
+									lookUp = lookUp.next;
+								}
+							}
+						}else{
+							cur = new titleList(currentTitle, null);
+							tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
+							lookUp.next = tmp;
+							lookUp = tmp;
+							wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
+						}
+						word = input.next();
+					}
+					lookUp = start;
 					if(word.equals("---END.OF.DOCUMENT---")){
 						docTitle = true;
-					}
-
-					while(!word.equals("---END.OF.DOCUMENT---") && !word.replaceAll("[^a-z0-9 ]", "").equals(current.str)){
-						System.out.println(cur.docTitle);
-						tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
-						current.next = tmp;
-						current = tmp;
-						word = input.next();
-						
-						while(!current.title.docTitle.equals(current.title.next.docTitle)){
-
-							temp = new titleList(currentTitle, null);
-							cur.next = temp;
-							cur = temp;
-							word = input.next();
-						}
 					}
 				}
 			}
@@ -101,20 +119,22 @@ public class Index3 {
 	public ArrayList<String> search(String searchstr) {
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
-		while(current != null) {
-			if(current.str.equals(searchstr)) {
-				documents.add(current.title.docTitle);
-				current = current.next;
-				while(current.title.next != null){
-					documents.add(current.title.docTitle);
+
+		while(current != null){
+			if(current.str.equals(searchstr)){
+				while(current.title != null){
+					if(!documents.contains(current.title.docTitle)){
+						documents.add(current.title.docTitle);
+						if(current.title.next == null){
+							break;
+						}
+						//current.title = current.title.next;
+					}
 					current.title = current.title.next;
 				}
-				if(!documents.isEmpty()){
-					break;
-
-				}
+				break;
+			}else{
 				current = current.next;
-
 			}
 		}
 		return documents;

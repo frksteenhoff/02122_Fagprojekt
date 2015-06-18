@@ -29,7 +29,7 @@ public class Index1 {
 		GUI g = new GUI(i);
 		Scanner console = new Scanner(System.in);
 		for (;;) {
-			System.out.println("Input search string or type exit to stop");
+			System.out.println("Input search string:");
 			String searchstr = console.nextLine();
 		}
 	}
@@ -128,6 +128,7 @@ public class Index1 {
 			recursiveBool(parts);
 			return true;
 
+			// Correct single boolean search (one and/or/not operator + length 3)
 		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){	
 			String [] titles = new String[arraySearch(parts[2]).size()];
 			titles = arraySearch(parts[2]).toArray(titles);

@@ -5,7 +5,7 @@ import java.util.Scanner;
 /*
  * Author(s): Anders Sperling, Henriette Steenhoff
  * Software technology, 4th semester F15, DTU
- * Using hash table in stead of linked list to search through.
+ * Using hash table in stead of linked list to search through wikiItems.
  */
 
 public class Index4 {	 
