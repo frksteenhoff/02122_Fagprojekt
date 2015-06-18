@@ -63,7 +63,6 @@ public class Index3 {
 				  is a title or a word within the document of that title*/
 				if(docTitle){
 					word = input.nextLine();
-					//System.out.println(word); 
 					if(!word.isEmpty()){
 						currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 						docTitle = false;
@@ -74,11 +73,8 @@ public class Index3 {
 					word = input.next();
 
 					// Creating WikItem for word if it does not already exist. 
-					System.out.println("-----------");
 					while(!word.equals("---END.OF.DOCUMENT---")){
-
 						if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
-							System.out.println(word + ":  " + wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", "")));
 							while(lookUp != null){
 								if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
 									while(lookUp.title != null){
@@ -87,21 +83,29 @@ public class Index3 {
 										}
 										lookUp.title = lookUp.title.next;
 									}
+									System.out.println("before: " + lookUp.str);
 									lookUp.title.next = new titleList(currentTitle, null);
 									lookUp.title = lookUp.title.next;
 									break;
 								}else{
 									lookUp = lookUp.next;
+									System.out.println("okay");
+									cur = new titleList(currentTitle, null);
+									tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
+									lookUp = tmp;
+									break;
 								}
 							}
 						}else{
 							cur = new titleList(currentTitle, null);
 							tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
-							lookUp.next = tmp;
-							System.out.println("her");
-							lookUp = tmp;
 							wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
 							System.out.println(wordList);
+							if(lookUp != null){
+								System.out.println("adding");
+								lookUp.next = tmp;
+								lookUp = tmp;
+							}
 						}
 						word = input.next();
 					}
@@ -125,22 +129,24 @@ public class Index3 {
 		WikiItem current = start;
 
 		while(current != null){
-			System.out.println(current.str);
+			System.out.println("hej " + current.str);
 			if(current.str.equals(searchstr)){
+				System.out.println("I'm in!");
 				while(current.title != null){
 					if(!documents.contains(current.title.docTitle)){
 						documents.add(current.title.docTitle);
-						//System.out.println(current.str + " added");
+						System.out.println(current.str + " added");
 						if(current.title.next == null){
 							break;
 						}
-						current.title = current.title.next;
+						break;
+						//current.title = current.title.next;
+						//System.out.println("next");
 					}
 					System.out.println("check");
 				}
-				current = current.next;
 			}
-			return documents;
+			current = current.next;
 		}
 		return documents;
 	}
