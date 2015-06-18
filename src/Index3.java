@@ -40,13 +40,13 @@ public class Index3 {
 		long Starttime = System.nanoTime();
 		String word, currentTitle = null;
 		ArrayList<String> wordList = new ArrayList<>();
-		titleList cur, look;
+		titleList cur;
 		WikiItem current, tmp, lookUp;
 		try {
 			Scanner input = new Scanner(new File(filename), "UTF-8");
 			word = input.next();
 			if(docTitle && !word.equals(null)){
-				currentTitle = word.replaceAll("[^A-Za-z0-9 ]", "");
+				currentTitle = word.toLowerCase().replaceAll("[^a-z0-9 ]", "");
 				docTitle = false;
 			}
 
@@ -56,7 +56,6 @@ public class Index3 {
 			current = start;
 			lookUp = start;
 			cur = titles;
-			look = titles;
 
 			while(input.hasNext()) {   // Read all words in input
 
@@ -75,8 +74,11 @@ public class Index3 {
 					word = input.next();
 
 					// Creating WikItem for word if it does not already exist. 
+					System.out.println("-----------");
 					while(!word.equals("---END.OF.DOCUMENT---")){
+
 						if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+							System.out.println(word + ":  " + wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", "")));
 							while(lookUp != null){
 								if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
 									while(lookUp.title != null){
@@ -96,8 +98,10 @@ public class Index3 {
 							cur = new titleList(currentTitle, null);
 							tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
 							lookUp.next = tmp;
+							System.out.println("her");
 							lookUp = tmp;
 							wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
+							System.out.println(wordList);
 						}
 						word = input.next();
 					}
@@ -121,21 +125,22 @@ public class Index3 {
 		WikiItem current = start;
 
 		while(current != null){
+			System.out.println(current.str);
 			if(current.str.equals(searchstr)){
 				while(current.title != null){
 					if(!documents.contains(current.title.docTitle)){
 						documents.add(current.title.docTitle);
+						//System.out.println(current.str + " added");
 						if(current.title.next == null){
 							break;
 						}
-						//current.title = current.title.next;
+						current.title = current.title.next;
 					}
-					current.title = current.title.next;
+					System.out.println("check");
 				}
-				break;
-			}else{
 				current = current.next;
 			}
+			return documents;
 		}
 		return documents;
 	}
