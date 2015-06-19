@@ -96,7 +96,7 @@ public class Index5 {
 		}
 		// Counter for time spent on indexing 
 		long endTime = System.nanoTime();
-		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
+		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000 + " sec. \n");
 	}
 
 	//Overall search logic
@@ -119,6 +119,14 @@ public class Index5 {
 			return suffixSearch(parts);
 
 		//If the search is not full-text or with correct boolean operators -> error message.
+		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){	
+			String [] titles = new String[arraySearch(parts[2]).size()];
+			titles = arraySearch(parts[2]).toArray(titles);
+			ArrayList<String> boolResult = boolSearch(parts[0], parts[1], titles);
+
+			System.out.println("Search words found in: \n" + boolResult);
+			return true;
+
 		}else if(!parts[1].equals("and") || !parts[1].equals("or") || !parts[1].equals("not") || parts.length < 3 
 				|| !parts[parts.length-2].equals("and") || !parts[parts.length-2].equals("or") || !parts[parts.length-2].equals("not")){
 			System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
@@ -129,14 +137,6 @@ public class Index5 {
 			return true;
 
 			// Correct single boolean search (one and/or/not operator + length 3)
-		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){	
-			String [] titles = new String[arraySearch(parts[2]).size()];
-			titles = arraySearch(parts[2]).toArray(titles);
-			ArrayList<String> boolResult = boolSearch(parts[0], parts[1], titles);
-
-			System.out.println("Search words found in: \n" + boolResult);
-			return true;
-
 		}else{
 			System.out.println("Use or, and or not as separator in multiple word search.");
 			return true;
@@ -144,9 +144,12 @@ public class Index5 {
 	}
 
 	public boolean search(String searchstr) {
+		long Starttime = System.nanoTime();
 		ArrayList<WikiItem> hash = wikiM.get(Math.abs(searchstr.hashCode()));
 		for(int i = 0; i < hash.size(); i++){
 			if(hash.get(i).str.equals(searchstr)){
+				long endTime = System.nanoTime();
+				System.out.println("Time spent on Simple Search: " + (endTime-Starttime) + " nanosec. \n");
 				System.out.println("Search string \"" + searchstr + "\" found in: \n"
 						+ hash.get(i).title);
 				return true;
@@ -188,7 +191,7 @@ public class Index5 {
 	}
 
 	private ArrayList<String> boolSearch(String word, String key, String[] parts) {
-
+		long Starttime = System.nanoTime();
 		ArrayList<String> found = new ArrayList<>();
 
 		if(key.equals("and")){
@@ -200,6 +203,8 @@ public class Index5 {
 		}else if(key.equals("not")){
 			found =  booleanNOT(word, parts);
 		}
+		long endTime = System.nanoTime();
+		System.out.println("Time spent on Boolean Search: " + (endTime-Starttime) + " nanosec. \n");
 		return found;
 	}
 
@@ -255,6 +260,7 @@ public class Index5 {
 
 	// Finding all the words ending on the specified suffix. (can be made with regular expressions!)
 	private boolean suffixSearch(String[] parts) {
+		long Starttime = System.nanoTime();
 		String suffix = parts[0].substring(1);
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
@@ -273,6 +279,8 @@ public class Index5 {
 			all.addAll(documents);
 			documents.clear();
 			documents.addAll(all);
+			long endTime = System.nanoTime();
+			System.out.println("Time spent on Suffix Search: " + (endTime-Starttime) + " nanosec. \n");
 			System.out.println("Search suffix \"" + suffix + "\" found in: \n" + documents);
 			return true;
 		}
@@ -280,6 +288,7 @@ public class Index5 {
 
 	//Finding all the words starting with the specified prefix. (can be made with regular expressions!)
 	private boolean prefixSearch(String[] parts) {
+		long Starttime = System.nanoTime();
 		String prefix = parts[0].substring(0,parts[0].length()-1);
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
@@ -298,6 +307,8 @@ public class Index5 {
 			all.addAll(documents);
 			documents.clear();
 			documents.addAll(all);
+			long endTime = System.nanoTime();
+			System.out.println("Time spent on Prefix Search: " + (endTime-Starttime) + " nanosec. \n");
 			System.out.println("Search prefix \"" + prefix + "\" found in: \n" + documents);
 			return true;
 		}
