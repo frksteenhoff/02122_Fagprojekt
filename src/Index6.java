@@ -114,7 +114,6 @@ public class  Index6{
 
 		String searchWord = searchString;
 		String[] parts = searchString.split(" ");
-		System.out.println(parts.length +" "+parts[1]);
 
 		System.out.println("------------------------------------");
 		System.out.println("You are searching for: \"" + searchWord + "\"");
