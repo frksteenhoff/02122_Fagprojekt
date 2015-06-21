@@ -114,6 +114,7 @@ public class  Index6{
 
 		String searchWord = searchString;
 		String[] parts = searchString.split(" ");
+		System.out.println(parts.length +" "+parts[1]);
 
 		System.out.println("------------------------------------");
 		System.out.println("You are searching for: \"" + searchWord + "\"");
@@ -128,16 +129,6 @@ public class  Index6{
 		}else if(parts.length == 1 && parts[0].startsWith("*")){
 			return suffixSearch(parts);
 
-		//If the search is not full-text or with correct boolean operators -> error message.
-		}else if(!parts[1].equals("and") || !parts[1].equals("or") || !parts[1].equals("not") || parts.length < 3 
-				|| !parts[parts.length-2].equals("and") || !parts[parts.length-2].equals("or") || !parts[parts.length-2].equals("not")){
-			System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
-			return true;
-
-		}else if(parts.length > 3 && parts.length % 2 == 1){		
-			recursiveBool(parts);
-			return true;
-
 			// Correct single boolean search (one and/or/not operator + length 3)
 		}else if(parts.length == 3 && (parts[1].equals("and") || parts[1].equals("or") || parts[1].equals("not"))){	
 			String [] titles = new String[arraySearch(parts[2]).size()];
@@ -145,6 +136,16 @@ public class  Index6{
 			ArrayList<String> boolResult = boolSearch(parts[0], parts[1], titles);
 
 			System.out.println("Search words found in: \n" + boolResult);
+			return true;
+
+		}else if(parts.length > 3 && parts.length % 2 == 1){		
+			recursiveBool(parts);
+			return true;
+
+			//If the search is not full-text or with correct boolean operators -> error message.
+		}else if((!parts[1].equals("and") || !parts[1].equals("or") || !parts[1].equals("not") || parts.length < 3 ) 
+				&& (parts[parts.length-2].equals("and") || parts[parts.length-2].equals("or") || parts[parts.length-2].equals("not"))){
+			System.out.println("No full-text search allowed. \nUse OR, AND or NOT as separator in multiple word search.");
 			return true;
 
 		}else{
@@ -156,10 +157,10 @@ public class  Index6{
 	public boolean search(String searchstr) {
 		WikiItem test = wikiM.get(searchstr.hashCode());
 		if(!(test == null) && wikiM.get(searchstr.hashCode()).str.equals(searchstr)){
-		WikiItem hash = wikiM.get(searchstr.hashCode());
-				System.out.println("Search string \"" + searchstr + "\" found in: \n"
-						+ hash.title);
-				return true;
+			WikiItem hash = wikiM.get(searchstr.hashCode());
+			System.out.println("Search string \"" + searchstr + "\" found in: \n"
+					+ hash.title);
+			return true;
 		}
 		System.out.println("Not found.");
 		return false;
