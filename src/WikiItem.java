@@ -16,6 +16,6 @@ public class WikiItem {
         str = s;
         title.add(t);
         next = n;
-        WikiNR = Math.abs(str.hashCode());
+        WikiNR = str.hashCode();
     }
 }

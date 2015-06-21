@@ -26,9 +26,9 @@ public class GUI extends JFrame implements MouseListener, KeyListener {
 	
 		public static JTextArea editText = new JTextArea("Search .."); //Event listener for Enter
 		boolean clicked = false;
-		Index5 i;
+		Index6 i;
 	
-	public GUI(Index5 filename){
+	public GUI(Index6 filename){
 		i = filename;
 		JFrame mainframe = new JFrame();
 			mainframe.setSize(400,50);

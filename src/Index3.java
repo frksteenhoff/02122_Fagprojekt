@@ -53,7 +53,6 @@ public class Index3 {
 
 			titles = new titleList(currentTitle, null);
 			start = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), titles, null);
-			System.out.println(word);
 			wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
 			current = start;
 			lookUp = start;
@@ -71,79 +70,72 @@ public class Index3 {
 					}
 					cur = new titleList(currentTitle, null);
 
-				}else if(!docTitle){
-					word = input.next();
-
-					// Creating WikItem for word if it does not already exist. 
-					while(!word.equals("---END.OF.DOCUMENT---")){
-						if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
-							lookUp = start;
-							while(lookUp != null){
-								if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
-									while(lookUp.title != null){
-										if(lookUp.title.next == null){
-											break;
-										}
-										lookUp.title.next = cur;
-										lookUp = lookUp.next;
-									}
-									lookUp.title.next = new titleList(currentTitle, null);
-									lookUp.title = lookUp.title.next;
-									break;
-								}else{
-									lookUp = lookUp.next;								}
-							}
-						}else{
-							tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
-							wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
-							System.out.println(word);
-							if(lookUp != null){
-								lookUp.next = tmp;
-								lookUp = tmp;
-								test++;
-								System.out.println(test);
-							}
-						}
-						word = input.next();
+	}else if(!docTitle){
+		word = input.next();
+			// Creating WikItem for word if it does not already exist. 
+		// Creating WikItem for word if it does not already exist. 
+	while(!word.equals("---END.OF.DOCUMENT---")){
+		if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+			while(lookUp != null){
+				if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+					while(lookUp.title != null){
+						if(lookUp.title.next == null){
+							break;
 					}
-					lookUp = start;
-					if(word.equals("---END.OF.DOCUMENT---")){
-						docTitle = true;
+						lookUp.title = lookUp.title.next;
 					}
+					lookUp.title.next = new titleList(currentTitle, null);
+					lookUp.title = lookUp.title.next;
+					break;
+				}else{
+					lookUp = lookUp.next;
 				}
 			}
-			input.close();	
-		} catch (FileNotFoundException e) {
-			System.out.println("Error reading file " + filename);
+}else{
+			cur = new titleList(currentTitle, null);
+	tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
+			if(lookUp != null){
+				lookUp.next = tmp;
+				lookUp = tmp;
+}
+			wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
 		}
-		// Counter for processing time
-		long endTime = System.nanoTime();
-		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
+		word = input.next();
 	}
+	lookUp = start;
+if(word.equals("---END.OF.DOCUMENT---")){
+	docTitle = true;
+	}
+}
+}
+input.close();	
+	} catch (FileNotFoundException e) {
+		System.out.println("Error reading file " + filename);
+	}
+	// Counter for processing time
+	long endTime = System.nanoTime();
+	System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
+}
 
 	public ArrayList<String> search(String searchstr) {
 		ArrayList<String> documents = new ArrayList<>();
 		WikiItem current = start;
 
 		while(current != null){
-			System.out.println("wikiItem: " + current.str);
 			if(current.str.equals(searchstr)){
-				System.out.println("I'm in!");
 				while(current.title != null){
 					if(!documents.contains(current.title.docTitle)){
 						documents.add(current.title.docTitle);
-						System.out.println(current.str + " tilføjet");
 						if(current.title.next == null){
 							break;
 						}
 						break;
-						//current.title = current.title.next;
-						//System.out.println("next");
 					}
-					System.out.println("check");
-				}
+				}	break;
+			}else{
+				current = current.next;
 			}
-			current = current.next;
+			return documents;
 		}
 		return documents;
 	}
