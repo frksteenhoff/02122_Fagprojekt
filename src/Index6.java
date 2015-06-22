@@ -21,7 +21,7 @@ import java.util.Set;
 public class  Index6{
 
 	WikiItem start, tmp;
-	HashMap<Object, WikiItem> wikiM = new HashMap<>();
+	HashMap<Object, WikiItem> wikiM = new HashMap<>(50000);
 	boolean docTitle = true;
 
 	public static void main(String[] args) {
