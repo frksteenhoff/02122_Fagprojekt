@@ -16,6 +16,7 @@ class Index1 {
     }
  
     public Index1(String filename) {
+    	long Starttime = System.nanoTime();
         String word;
         WikiItem current, tmp;
         try {
@@ -25,12 +26,14 @@ class Index1 {
             current = start;
             while (input.hasNext()) {   // Read all words in input
                 word = input.next();
-                System.out.println(word);
+                //System.out.println(word);
                 tmp = new WikiItem(word, null);
                 current.next = tmp;
                 current = tmp;
             }
             input.close();
+            long endTime = System.nanoTime();
+    		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000 + " sec. \n");
         } catch (FileNotFoundException e) {
             System.out.println("Error reading file " + filename);
         }

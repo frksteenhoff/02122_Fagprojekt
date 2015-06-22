@@ -93,7 +93,7 @@ public class Index4 {
 		}
 		// Counter for processing time
 		long endTime = System.nanoTime();
-		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
+		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000 + " sec. \n");
 	}
 	// Method checking whether string to be added already exists or not
 	boolean stringTitleDuplicate(ArrayList<WikiItem> list, String string, String currentTitle){

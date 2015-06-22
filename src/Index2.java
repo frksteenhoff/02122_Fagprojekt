@@ -69,7 +69,7 @@ public class Index2 {
 		}
 		// Counter for processing time
 		long endTime = System.nanoTime();
-		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000000 + " sec. \n");
+		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000 + " sec. \n");
 	}
 
 	public ArrayList<String> search(String searchstr) {

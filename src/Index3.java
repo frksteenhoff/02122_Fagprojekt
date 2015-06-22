@@ -70,6 +70,7 @@ public class Index3 {
 					}
 					cur = new titleList(currentTitle, null);
 
+<<<<<<< Updated upstream
 	}else if(!docTitle){
 		word = input.next();
 			// Creating WikItem for word if it does not already exist. 
@@ -81,6 +82,40 @@ public class Index3 {
 					while(lookUp.title != null){
 						if(lookUp.title.next == null){
 							break;
+=======
+				}else if(!docTitle){
+					word = input.next();
+
+					// Creating WikItem for word if it does not already exist. 
+					// Creating WikItem for word if it does not already exist. 
+					while(!word.equals("---END.OF.DOCUMENT---")){
+						if(wordList.contains(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+							while(lookUp != null){
+								if(lookUp.str.equals(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""))){
+									while(lookUp.title != null){
+										if(lookUp.title.next == null){
+											break;
+										}
+										lookUp.title = lookUp.title.next;
+									}
+									lookUp.title.next = new titleList(currentTitle, null);
+									lookUp.title = lookUp.title.next;
+									break;
+								}else{
+									lookUp = lookUp.next;
+								}
+							}
+						}else{
+							cur = new titleList(currentTitle, null);
+							tmp = new WikiItem(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""), cur, null);
+							if(lookUp != null){
+								lookUp.next = tmp;
+								lookUp = tmp;
+							}
+							wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
+						}
+						word = input.next();
+>>>>>>> Stashed changes
 					}
 						lookUp.title = lookUp.title.next;
 					}
@@ -100,11 +135,17 @@ public class Index3 {
 }
 			wordList.add(word.toLowerCase().replaceAll("[^a-z0-9 ]", ""));
 		}
+<<<<<<< Updated upstream
 		word = input.next();
 	}
 	lookUp = start;
 if(word.equals("---END.OF.DOCUMENT---")){
 	docTitle = true;
+=======
+		// Counter for processing time
+		long endTime = System.nanoTime();
+		System.out.println("Time spent on indexing: " + (endTime-Starttime)/1000000 + " sec. \n");
+>>>>>>> Stashed changes
 	}
 }
 }
